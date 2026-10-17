@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Sky from './Sky'
 import { PROFILE, FACTS, PROJECTS } from './data'
 
@@ -6,6 +6,21 @@ function Clock() {
   const [t, setT] = useState(() => new Date())
   useEffect(() => { const i = setInterval(() => setT(new Date()), 30000); return () => clearInterval(i) }, [])
   return <>{t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })} in Solapur</>
+}
+
+// 3D tilt that follows the pointer. Used on cards only.
+function Tilt({ as: Tag = 'article', className = '', children }) {
+  const ref = useRef(null)
+  const ok = () => matchMedia('(hover:hover) and (min-width:768px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches
+  const move = (e) => {
+    if (!ok()) return
+    const el = ref.current, r = el.getBoundingClientRect()
+    const rx = ((e.clientY - r.top) / r.height - 0.5) * -12
+    const ry = ((e.clientX - r.left) / r.width - 0.5) * 12
+    el.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`
+  }
+  const leave = () => { ref.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)' }
+  return <Tag ref={ref} className={'glass card ' + className} onPointerMove={move} onPointerLeave={leave}>{children}</Tag>
 }
 
 export default function App() {
@@ -34,18 +49,27 @@ export default function App() {
       <Sky />
 
       <nav className="glass nav" aria-label="Main">
-        <a href="#top">Home</a><a href="#about">About</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+        <a href="#top">Home</a><a href="#about">About</a><a href="#projects">Project</a><a href="#contact">Contact</a>
       </nav>
 
       <header id="top" className="hero">
-        <div className="wrap">
-          <h1>I’m Akib. I build web apps, and I’m learning to build AI agents.</h1>
-          <p className="lede">First-year computer science student in Solapur. I work in the MERN stack, practise data structures and algorithms, and contribute to open source through GSSoC 2026.</p>
-          <div className="row">
-            <a className="btn" href="#projects">See my projects</a>
-            <a className="btn ghost glass" href={`mailto:${PROFILE.email}`}>Email me</a>
+        <div className="scene" aria-hidden="true">
+          <div className="globe">
+            {[0, 1, 2, 3, 4, 5].map((n) => <i key={n} className="m" style={{ '--i': n }} />)}
+            <i className="l" style={{ "--w": 1, "--z": 0 }} /><i className="l" style={{ "--w": 0.82, "--z": 0.57 }} /><i className="l" style={{ "--w": 0.82, "--z": -0.57 }} /><i className="l" style={{ "--w": 0.47, "--z": 0.88 }} /><i className="l" style={{ "--w": 0.47, "--z": -0.88 }} />
+            <i className="core" />
           </div>
-          <p className="hint">Hover the stars to see how my stack connects.</p>
+          <div className="orbit"><b /></div>
+        </div>
+        <div className="wrap">
+          <p className="kicker">T.Y. Computer Science Engineering</p>
+          <h1>Full Stack Developer</h1>
+          <p className="plate glass">AKIB SHAIKH</p>
+          <p className="lede">Building web apps with the MERN stack and working toward AI agents. <span>Open to internships and open-source work.</span></p>
+          <div className="row">
+            <a className="btn" href="#projects">View my work</a>
+            <a className="btn ghost" href="#contact">Contact me</a>
+          </div>
         </div>
         <div className="limb" aria-hidden="true" />
       </header>
@@ -63,16 +87,19 @@ export default function App() {
         </section>
 
         <section id="projects" className="wrap">
-          <h2>Projects</h2>
-          <div className="projects">
-            {PROJECTS.map((p) => (
-              <article key={p.title} className={'glass project' + (p.big ? ' big' : '')}>
-                <p className="status">{p.status}</p>
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-              </article>
-            ))}
-          </div>
+          <h2>Project</h2>
+          {PROJECTS.map((p) => (
+            <Tilt key={p.title} className="project">
+              <p className="status">{p.status}</p>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+              <p className="stack">{p.stack}</p>
+              <div className="row">
+                <a className="btn" href={p.live} target="_blank" rel="noopener noreferrer">Open live site</a>
+                <a className="btn ghost" href={p.source} target="_blank" rel="noopener noreferrer">View source</a>
+              </div>
+            </Tilt>
+          ))}
           <p className="more">More of my work, including open-source pull requests, is on <a href={PROFILE.github} target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
         </section>
 

@@ -22,16 +22,30 @@ h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.025em;lin
 .nav a{text-decoration:none;color:var(--mist);padding:8px 18px;border-radius:999px;font-size:.95rem;transition:color .2s,background .2s}
 .nav a:hover{color:var(--moon);background:rgba(255,255,255,.1)}
 
-.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:120px 0 160px}
-.hero .wrap{width:100%;position:relative;z-index:1}
-h1{font-size:clamp(2.3rem,5.4vw,4.4rem);font-weight:600;max-width:13em;animation:rise 1s .1s both cubic-bezier(.2,.8,.2,1)}
-.lede{color:var(--mist);max-width:34rem;margin:24px 0 32px;animation:rise 1s .35s both cubic-bezier(.2,.8,.2,1)}
-.row{display:flex;gap:12px;flex-wrap:wrap;animation:rise 1s .5s both cubic-bezier(.2,.8,.2,1)}
-.btn{display:inline-block;padding:13px 24px;border-radius:14px;text-decoration:none;font-weight:500;color:#0a1020;background:var(--ion);transition:transform .2s,background .2s}
-.btn:hover{transform:translateY(-2px);background:#bccfff}
-.btn.ghost{color:var(--moon);background:transparent}
-.hint{margin-top:28px;font-size:.9rem;color:var(--mist);animation:rise 1s 1.2s both}
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:110px 0 150px;overflow:hidden}
+.hero .wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.kicker{letter-spacing:.38em;text-transform:uppercase;font-size:.85rem;color:var(--mist);animation:rise 1s both cubic-bezier(.2,.8,.2,1)}
+h1{font-size:clamp(3rem,10.5vw,8.4rem);font-weight:700;line-height:.95;margin:14px 0 28px;max-width:9em;letter-spacing:-.04em;background:linear-gradient(180deg,#fff 10%,#8e98b0 120%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1s .1s both cubic-bezier(.2,.8,.2,1)}
+.plate{border-radius:999px;padding:14px clamp(26px,5vw,56px);font:800 clamp(1.3rem,3.6vw,2.6rem)/1 'Bricolage Grotesque',sans-serif;letter-spacing:.22em;box-shadow:inset 1.5px 1.5px 0 rgba(255,255,255,.4),inset -1px -1px 0 rgba(255,255,255,.1),0 0 90px rgba(157,184,255,.28),0 24px 60px rgba(0,0,0,.45);animation:rise 1s .25s both cubic-bezier(.2,.8,.2,1)}
+.lede{color:var(--mist);max-width:34rem;margin:30px 0 34px;animation:rise 1s .4s both cubic-bezier(.2,.8,.2,1)}
+.lede span{color:var(--moon)}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:rise 1s .55s both cubic-bezier(.2,.8,.2,1)}
+.btn{display:inline-block;padding:14px 28px;border-radius:999px;text-decoration:none;font-weight:500;color:#0a1020;background:#fff;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-2px);background:#dfe8ff}
+.btn.ghost{color:var(--moon);background:transparent;border:1px solid var(--edge)}
+.btn.ghost:hover{background:rgba(255,255,255,.08)}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}}
+/* Wireframe globe behind the hero text */
+.scene{--s:min(78vw,680px);position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);transform:translate(-50%,-52%);perspective:1400px;z-index:1;opacity:.9}
+.globe{position:absolute;inset:0;transform-style:preserve-3d;animation:spin 60s linear infinite}
+.globe i{position:absolute;border:1px solid rgba(157,184,255,.2);border-radius:50%}
+.globe .m{inset:0;transform:rotateY(calc(var(--i)*30deg))}
+.globe .l{left:50%;top:50%;width:calc(var(--s)*var(--w));height:calc(var(--s)*var(--w));transform:translate(-50%,-50%) rotateX(90deg) translateZ(calc(var(--s)/2*var(--z)))}
+.globe .core{inset:9%;border:0;background:radial-gradient(circle at 35% 30%,rgba(157,184,255,.16),rgba(6,9,19,.85) 65%);transform:translateZ(0)}
+.orbit{position:absolute;inset:-6%;border:1px solid rgba(255,255,255,.28);border-radius:50%;transform:rotateX(72deg) rotateZ(-18deg);animation:orb 24s linear infinite}
+.orbit b{position:absolute;left:50%;top:-4px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--ember);box-shadow:0 0 16px 4px rgba(255,201,138,.7)}
+@keyframes spin{to{transform:rotateY(360deg)}}
+@keyframes orb{to{transform:rotateX(72deg) rotateZ(342deg)}}
 .limb{position:absolute;left:50%;bottom:0;width:150vw;height:min(26vw,240px);transform:translateX(-50%);border-radius:50%/100% 100% 0 0;background:linear-gradient(var(--deep),var(--void));box-shadow:0 -1px 0 rgba(157,184,255,.7),0 -18px 90px rgba(157,184,255,.28)}
 
 section{padding:100px 0 20px}
@@ -41,14 +55,18 @@ h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:600;margin-bottom:22px}
 .about p+p{margin-top:16px}
 dl div{display:grid;grid-template-columns:7.5rem 1fr;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1)}
 dt{color:var(--mist)}
-.projects{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-.project{grid-column:span 5;padding:28px;border-radius:26px;transition:transform .3s}
-.project:hover{transform:translateY(-4px)}
-.project.big{grid-column:span 7;grid-row:span 2;padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;justify-content:flex-end;min-height:340px;border-radius:34px}
-.project h3{font-size:1.5rem;margin-bottom:8px}
-.project.big h3{font-size:clamp(2rem,3.6vw,2.9rem)}
-.project p{color:var(--mist)}
-.project .status{color:var(--ember);font-size:.9rem;margin-bottom:10px}
+
+/* Cards: tilt + glow on hover (tilt is set from JS) */
+.card{transform-style:preserve-3d;will-change:transform;transition:transform .3s cubic-bezier(.16,1,.3,1),border-color .35s,box-shadow .35s}
+.card:hover{border-color:rgba(157,184,255,.55);box-shadow:inset 1.5px 1.5px 0 rgba(255,255,255,.4),inset -1px -1px 0 rgba(255,255,255,.1),inset 0 0 22px rgba(157,184,255,.14),0 0 32px rgba(157,184,255,.2),0 24px 60px rgba(0,0,0,.45)}
+.card h3{margin-bottom:8px}
+.card p{color:var(--mist)}
+.card .status{color:var(--ember);font-size:.9rem;margin-bottom:10px}
+.project{padding:clamp(28px,4vw,48px);border-radius:34px}
+.project h3{font-size:clamp(1.8rem,3.4vw,2.6rem)}
+.project>p{max-width:46rem}
+.project .stack{margin-top:14px}
+.project .row{margin-top:26px;justify-content:flex-start;animation:none}
 .more{margin-top:26px;color:var(--mist)}
 .more a:hover,.contact li a:hover{color:var(--ember)}
 .contact{padding:clamp(28px,5vw,64px);border-radius:36px}
@@ -57,5 +75,5 @@ dt{color:var(--mist)}
 .mail:hover{color:var(--ember)}
 .contact ul{display:flex;gap:22px;flex-wrap:wrap;list-style:none;padding:0}
 footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--mist);font-size:.9rem;padding-top:80px;padding-bottom:calc(36px + env(safe-area-inset-bottom,0))}
-@media(max-width:800px){.about{grid-template-columns:1fr}.project,.project.big{grid-column:1/-1;grid-row:auto;min-height:0}.hero{align-items:flex-start;padding-top:130px}.limb{height:80px}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:800px){.nav{overflow-x:auto}.nav a{padding:8px 11px;font-size:.88rem}.about{grid-template-columns:1fr}.limb{height:80px}}
+@media(prefers-reduced-motion:reduce){.globe,.orbit{animation:none!important}*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
