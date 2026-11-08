@@ -65,9 +65,10 @@ function StackSection() {
     const reduceQuery = matchMedia('(prefers-reduced-motion: reduce)')
     const isMotionEnabled = () => motionOn() && !reduceQuery.matches && innerWidth >= 700
     const clamp = (n, min, max) => Math.min(max, Math.max(min, n))
-    const easeOutCubic = (n) => 1 - ((1 - n) ** 3)
+    const easeInOutCubic = (n) => n < 0.5 ? 4 * n ** 3 : 1 - ((-2 * n + 2) ** 3) / 2
 
     const measure = () => {
+      rowsRef.current.forEach((el) => el?.classList.remove('live'))
       const pinRect = pin.getBoundingClientRect()
       const stageRect = stage.getBoundingClientRect()
       pinTop = pinRect.top + scrollY
@@ -90,21 +91,38 @@ function StackSection() {
       if (!active || !eligible || !isMotionEnabled()) { reset(); return }
       const range = Math.max(1, pinHeight - viewportHeight)
       const p = clamp((scrollY - pinTop) / range, 0, 1)
-      const e = easeOutCubic(clamp(p / 0.7, 0, 1))
-      const narrow = innerWidth < 900
-      const radius = (narrow ? Math.min(innerWidth * 0.3, 150) : Math.min(innerWidth * 0.34, 300))
+      const marquee = p >= 0.72
+      const burstProgress = clamp((p - 0.12) / 0.6, 0, 1)
+      const t = easeInOutCubic(burstProgress)
+      const s = Math.sin(Math.PI * t)
       originalRefs.current.forEach((el, i) => {
-        const angle = i * 360 / 22
-        const currentAngle = (angle + 540 * (1 - e)) * (1 - e)
-        const x = ((i % 4) - 1.5) * 90
+        if (marquee) {
+          el.style.transform = ''
+          el.style.opacity = ''
+          el.style.willChange = ''
+          return
+        }
+        const pileX = ((i * 37) % 11 - 5) * 6
+        const pileY = ((i * 53) % 9 - 4) * 7
+        const pileRot = ((i * 29) % 13 - 6) * 2.2
+        const shiftedT = easeInOutCubic(clamp(burstProgress - (i / 22) * 0.08, 0, 1))
+        const shiftedS = Math.sin(Math.PI * shiftedT)
+        const side = i < STACK_ROW_1.length ? -1 : 1
         const center = centers[i] || { dx: 0, dy: 0 }
-        el.style.transform = `translate3d(${center.dx * (1 - e) + x * (1 - e)}px,${center.dy * (1 - e)}px,0) rotateX(${currentAngle}deg) translateZ(${radius * (1 - e)}px)`
-        el.style.opacity = String(e + (1 - e) * (0.25 + 0.75 * (Math.cos(currentAngle * Math.PI / 180) + 1) / 2))
-        el.style.willChange = p > 0 && p < 1 ? 'transform, opacity' : ''
+        const compress = clamp(p / 0.12, 0, 1)
+        const pileScale = p < 0.12 ? 1 + 0.06 * compress : 1
+        const pileOffset = p < 0.12 ? 1 - 0.3 * compress : 1
+        const x = (pileX * pileOffset - center.dx) * (1 - shiftedT) + side * shiftedS * Math.min(innerWidth * 0.34, 460)
+        const y = (pileY * pileOffset - center.dy) * (1 - shiftedT) - shiftedS * 40
+        const rotation = pileRot * (1 - shiftedT) + side * shiftedS * 14
+        const scale = (0.8 + 0.2 * shiftedT) * pileScale
+        el.style.transform = `translate3d(${x}px,${y}px,0) rotate(${rotation}deg) scale(${scale})`
+        el.style.opacity = String(0.45 + 0.55 * Math.max(shiftedT, i / 21))
+        el.style.willChange = p > 0 && p < 0.72 ? 'transform, opacity' : ''
       })
-      const duplicateOpacity = clamp((p - 0.6) / 0.4, 0, 1)
+      const duplicateOpacity = clamp((p - 0.6) / 0.12, 0, 1)
       duplicateRefs.current.forEach((el) => { el.style.opacity = String(duplicateOpacity) })
-      rowsRef.current.forEach((el) => el?.classList.toggle('live', p >= 0.98))
+      rowsRef.current.forEach((el) => el?.classList.toggle('live', marquee))
     }
     const onScroll = () => {
       if (!ticking) { ticking = true; requestAnimationFrame(apply) }
@@ -143,8 +161,8 @@ function StackSection() {
   const renderRow = (items, rowIndex) => (
     <div ref={(el) => { rowsRef.current[rowIndex] = el }} className="stack-row">
       <div className="stack-track">
-        {items.map((tag, i) => <span ref={(el) => { originalRefs.current[rowIndex ? STACK_ROW_1.length + i : i] = el }} key={`original-${tag}`} className="stack-tag tagx mono">{tag}</span>)}
-        {items.map((tag, i) => <span ref={(el) => { duplicateRefs.current[rowIndex ? STACK_ROW_1.length + i : i] = el }} key={`duplicate-${tag}`} className="stack-tag duplicate tagx mono" aria-hidden="true">{tag}</span>)}
+        {items.map((tag, i) => <span ref={(el) => { originalRefs.current[rowIndex ? STACK_ROW_1.length + i : i] = el }} key={`original-${tag}`} className="stack-tag mono">{tag}</span>)}
+        {items.map((tag, i) => <span ref={(el) => { duplicateRefs.current[rowIndex ? STACK_ROW_1.length + i : i] = el }} key={`duplicate-${tag}`} className="stack-tag duplicate mono" aria-hidden="true">{tag}</span>)}
       </div>
     </div>
   )

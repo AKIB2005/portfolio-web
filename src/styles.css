@@ -85,15 +85,17 @@ h1{font-size:clamp(4rem,19vw,14rem);font-weight:700;line-height:.86;letter-spaci
 .r:not(.in) *{animation-play-state:paused}
 
 section{padding:110px 0 10px;content-visibility:auto;contain-intrinsic-size:auto 700px}
-.stack-pin{height:220vh;padding:0;content-visibility:visible}
-.stack-stage{position:sticky;top:0;height:100svh;display:grid;place-items:center;perspective:1200px}
+.stack-pin{height:260vh;padding:0;content-visibility:visible}
+.stack-stage{position:sticky;top:0;height:100svh;display:grid;align-content:center;gap:18px;overflow:hidden}
 .stack-stage .sh{width:100%;margin-bottom:0}
-.stack-rows{width:100%;display:grid;gap:14px;overflow:hidden}
+.stack-rows{width:100%;display:grid;gap:18px;overflow:hidden}
 .stack-row{overflow:hidden}
 .stack-track{display:flex;width:max-content;transform-style:preserve-3d}
-.stack-tag{display:block;flex:0 0 auto;white-space:nowrap;backface-visibility:hidden}
+.stack-tag{display:block;flex:0 0 auto;white-space:nowrap;font-size:clamp(14px,1.5vw,20px);padding:14px 24px;border:1px solid var(--line);border-radius:4px;transition:border-color .2s,color .2s}
+.stack-tag:hover{border-color:var(--pink);color:var(--pink)}
+.stack-tag+.stack-tag{margin-left:18px}
 .stack-tag.duplicate{opacity:0}
-.stack-row.live .stack-track{animation:stack-slide 40s linear infinite}
+.stack-row.live .stack-track{animation:stack-slide 35s linear infinite}
 .stack-row.live:nth-child(2) .stack-track{animation-direction:reverse}
 .stack-row:hover .stack-track{animation-play-state:paused}
 @keyframes stack-slide{to{transform:translateX(-50%)}}
@@ -165,11 +167,11 @@ dd a:hover{color:var(--pink)}
   .stack-stage{position:relative;height:auto;min-height:0;padding-top:110px;padding-bottom:70px}
   .stack-stage .sh{margin-bottom:44px}
   .stack-rows{gap:10px}
-  .stack-track{flex-wrap:wrap;width:auto;gap:8px}
-  .stack-tag{opacity:1!important;transform:none!important;will-change:auto!important}
-  .stack-tag.duplicate{display:none}
-  .stack-row .stack-track{animation:stack-mobile-in .8s var(--ease) both}
-  .stack-row:nth-child(2) .stack-track{animation-delay:.12s}
+  .stack-row{animation:stack-mobile-in .8s var(--ease) both}
+  .stack-row:nth-child(2){animation-delay:.12s}
+  .stack-track{width:max-content;animation:stack-slide 35s linear infinite}
+  .stack-tag{font-size:14px;opacity:1!important;transform:none!important;will-change:auto!important}
+  .stack-tag.duplicate{display:block;opacity:1!important}
   @keyframes stack-mobile-in{from{opacity:0;transform:translateY(16px)}}
   .stack-static{padding-bottom:10px}
 }
@@ -178,7 +180,9 @@ dd a:hover{color:var(--pink)}
   .stack-stage{position:relative;height:auto;min-height:0;padding-top:110px;padding-bottom:70px}
   .stack-stage .sh{margin-bottom:44px}
   .stack-tag{opacity:1!important;transform:none!important;will-change:auto!important}
+  .stack-tag+.stack-tag{margin-left:0}
   .stack-tag.duplicate{display:none}
+  .stack-track{flex-wrap:wrap;width:auto;gap:8px}
   .stack-static{padding-bottom:10px}
 }
 
@@ -208,6 +212,8 @@ html[data-motion=off] .stack-stage{position:relative;height:auto;min-height:0;pa
 html[data-motion=off] .stack-stage .sh{margin-bottom:44px}
 html[data-motion=off] .stack-tag{opacity:1!important;transform:none!important;will-change:auto!important}
 html[data-motion=off] .stack-tag.duplicate{display:none}
+html[data-motion=off] .stack-track{flex-wrap:wrap;width:auto;gap:8px}
+html[data-motion=off] .stack-tag+.stack-tag{margin-left:0}
 html[data-motion=off] .stack-static{padding-bottom:10px}
 
 /* Contact form */
