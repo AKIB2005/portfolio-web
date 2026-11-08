@@ -58,8 +58,14 @@ export const HACKS = [
   ['Nov 2026', 'CodersInPune Hackathon', 'Team PROTEAS on a knowledge-handover platform. I build the backend and the extraction-to-verification pipeline.'],
 ]
 
+export const STACK_ROW_1 = ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Framer Motion', 'Java', 'Python', 'C', 'C++']
+export const STACK_ROW_2 = ['Node.js', 'Express', 'Flask', 'MongoDB', 'Firebase', 'Flutter', 'Gemini API', 'D3.js', 'GitHub REST API', 'Git', 'GitHub', 'Vercel']
+
 export const STACK = [
-  ['Languages', ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'Java', 'Python', 'C', 'C++']],
-  ['Frameworks', ['React', 'Node.js', 'Express', 'Flask', 'Flutter']],
-  ['Data and tools', ['MongoDB', 'Firebase', 'D3.js', 'Gemini API', 'Git and GitHub']],
+  ['Frontend', ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Framer Motion']],
+  ['Backend', ['Node.js', 'Express', 'Flask']],
+  ['Database', ['MongoDB', 'Firebase']],
+  ['Languages', ['Java', 'Python', 'C', 'C++']],
+  ['Mobile and AI', ['Flutter', 'Gemini API']],
+  ['Tools', ['D3.js', 'GitHub REST API', 'Git', 'GitHub', 'Vercel']],
 ]

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Sky from './Sky'
-import { PROFILE, FACTS, FEATURED, MORE, OSS, HACKS, STACK } from './data'
+import ContactForm from './ContactForm'
+import { PROFILE, FACTS, FEATURED, MORE, OSS, HACKS, STACK, STACK_ROW_1, STACK_ROW_2 } from './data'
 
 const LINKS = [['#about', 'About'], ['#work', 'Work'], ['#community', 'Community'], ['#stack', 'Stack'], ['#contact', 'Contact']]
 const MARQUEE = ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Python', 'Flutter', 'Firebase', 'Flask', 'DSA', 'Agentic AI']
@@ -40,6 +41,138 @@ function Clock() {
   const [t, setT] = useState(() => new Date())
   useEffect(() => { const i = setInterval(() => setT(new Date()), 30000); return () => clearInterval(i) }, [])
   return <>{t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })} in Solapur</>
+}
+
+function StackSection() {
+  const pinRef = useRef(null)
+  const stageRef = useRef(null)
+  const originalRefs = useRef([])
+  const duplicateRefs = useRef([])
+  const rowsRef = useRef([])
+
+  useEffect(() => {
+    const pin = pinRef.current
+    const stage = stageRef.current
+    if (!pin || !stage) return undefined
+
+    let active = false
+    let ticking = false
+    let eligible = innerWidth >= 700
+    let pinTop = 0
+    let pinHeight = 0
+    let viewportHeight = innerHeight
+    let centers = []
+    const reduceQuery = matchMedia('(prefers-reduced-motion: reduce)')
+    const isMotionEnabled = () => motionOn() && !reduceQuery.matches && innerWidth >= 700
+    const clamp = (n, min, max) => Math.min(max, Math.max(min, n))
+    const easeOutCubic = (n) => 1 - ((1 - n) ** 3)
+
+    const measure = () => {
+      const pinRect = pin.getBoundingClientRect()
+      const stageRect = stage.getBoundingClientRect()
+      pinTop = pinRect.top + scrollY
+      pinHeight = pin.offsetHeight
+      viewportHeight = innerHeight
+      centers = originalRefs.current.map((el) => {
+        const rect = el.getBoundingClientRect()
+        return { dx: rect.left + rect.width / 2 - (stageRect.left + stageRect.width / 2), dy: rect.top + rect.height / 2 - (stageRect.top + stageRect.height / 2) }
+      })
+    }
+
+    const reset = () => {
+      originalRefs.current.forEach((el) => { el.style.transform = ''; el.style.opacity = ''; el.style.willChange = '' })
+      duplicateRefs.current.forEach((el) => { el.style.opacity = '' })
+      rowsRef.current.forEach((el) => el?.classList.remove('live'))
+    }
+
+    const apply = () => {
+      ticking = false
+      if (!active || !eligible || !isMotionEnabled()) { reset(); return }
+      const range = Math.max(1, pinHeight - viewportHeight)
+      const p = clamp((scrollY - pinTop) / range, 0, 1)
+      const e = easeOutCubic(clamp(p / 0.7, 0, 1))
+      const narrow = innerWidth < 900
+      const radius = (narrow ? Math.min(innerWidth * 0.3, 150) : Math.min(innerWidth * 0.34, 300))
+      originalRefs.current.forEach((el, i) => {
+        const angle = i * 360 / 22
+        const currentAngle = (angle + 540 * (1 - e)) * (1 - e)
+        const x = ((i % 4) - 1.5) * 90
+        const center = centers[i] || { dx: 0, dy: 0 }
+        el.style.transform = `translate3d(${center.dx * (1 - e) + x * (1 - e)}px,${center.dy * (1 - e)}px,0) rotateX(${currentAngle}deg) translateZ(${radius * (1 - e)}px)`
+        el.style.opacity = String(e + (1 - e) * (0.25 + 0.75 * (Math.cos(currentAngle * Math.PI / 180) + 1) / 2))
+        el.style.willChange = p > 0 && p < 1 ? 'transform, opacity' : ''
+      })
+      const duplicateOpacity = clamp((p - 0.6) / 0.4, 0, 1)
+      duplicateRefs.current.forEach((el) => { el.style.opacity = String(duplicateOpacity) })
+      rowsRef.current.forEach((el) => el?.classList.toggle('live', p >= 0.98))
+    }
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(apply) }
+    }
+    const setActive = (next) => {
+      active = next
+      if (active) {
+        measure()
+        addEventListener('scroll', onScroll, { passive: true })
+        onScroll()
+      } else {
+        removeEventListener('scroll', onScroll)
+        reset()
+      }
+    }
+    const io = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), { rootMargin: '20% 0px' })
+    const ro = new ResizeObserver(() => { eligible = innerWidth >= 700; measure(); if (!eligible) reset(); else if (active) onScroll() })
+    const onMotionChange = () => { if (!isMotionEnabled()) reset(); else if (active) onScroll() }
+    io.observe(pin)
+    ro.observe(pin)
+    ro.observe(stage)
+    reduceQuery.addEventListener?.('change', onMotionChange)
+    const observer = new MutationObserver(onMotionChange)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-motion'] })
+    measure()
+    if (!isMotionEnabled()) reset()
+    return () => {
+      io.disconnect()
+      ro.disconnect()
+      observer.disconnect()
+      reduceQuery.removeEventListener?.('change', onMotionChange)
+      removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  const renderRow = (items, rowIndex) => (
+    <div ref={(el) => { rowsRef.current[rowIndex] = el }} className="stack-row">
+      <div className="stack-track">
+        {items.map((tag, i) => <span ref={(el) => { originalRefs.current[rowIndex ? STACK_ROW_1.length + i : i] = el }} key={`original-${tag}`} className="stack-tag tagx mono">{tag}</span>)}
+        {items.map((tag, i) => <span ref={(el) => { duplicateRefs.current[rowIndex ? STACK_ROW_1.length + i : i] = el }} key={`duplicate-${tag}`} className="stack-tag duplicate tagx mono" aria-hidden="true">{tag}</span>)}
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      <section id="stack" ref={pinRef} className="stack-pin">
+        <div ref={stageRef} className="stack-stage wrap">
+          <Head n="04" title="Stack" />
+          <div className="stack-rows">
+            {renderRow(STACK_ROW_1, 0)}
+            {renderRow(STACK_ROW_2, 1)}
+          </div>
+          <ul className="visually-hidden">{[...STACK_ROW_1, ...STACK_ROW_2].map((tag) => <li key={tag}>{tag}</li>)}</ul>
+        </div>
+      </section>
+      <div className="stack-static wrap">
+        <div className="cols">
+          {STACK.map(([group, items], i) => (
+            <div key={group} className="r" data-r style={{ '--d': i }}>
+              <h4 className="mono sub">{group}</h4>
+              <div className="chips">{items.map((tag) => <span key={tag} className="tagx mono">{tag}</span>)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default function App() {
@@ -233,27 +366,25 @@ export default function App() {
           </div>
         </section>
 
-        <section id="stack" className="wrap">
-          <Head n="04" title="Stack" />
-          <div className="cols">
-            {STACK.map(([g, items], i) => (
-              <div key={g} className="r" data-r style={{ '--d': i }}>
-                <h4 className="mono sub">{g}</h4>
-                <div className="chips">{items.map((s) => <span key={s} className="tagx mono">{s}</span>)}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <StackSection />
 
         <section id="contact" className="wrap">
           <Head n="05" title="Contact" />
-          <p className="big r" data-r>Open to collaborations, open-source work and internships.</p>
-          <a className="mail r" data-r href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
-          <ul className="socials r" data-r>
-            {[['GitHub', PROFILE.github], ['LinkedIn', PROFILE.linkedin], ['X', PROFILE.x], ['Instagram', PROFILE.instagram]].map(([t, h]) => (
-              <li key={t}><a className="mono" href={h} target="_blank" rel="noopener noreferrer">{t} ↗</a></li>
-            ))}
-          </ul>
+          <div className="contact-grid">
+            <div>
+              <p className="big r" data-r>Open to collaborations, open-source work and internships.</p>
+              <a className="mail r" data-r href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
+              <ul className="socials r" data-r>
+                {[['GitHub', PROFILE.github], ['LinkedIn', PROFILE.linkedin], ['X', PROFILE.x], ['Instagram', PROFILE.instagram]].map(([t, h]) => (
+                  <li key={t}><a className="mono" href={h} target="_blank" rel="noopener noreferrer">{t} ↗</a></li>
+                ))}
+              </ul>
+            </div>
+            <div className="r" data-r style={{ '--d': 1 }}>
+              <p className="mono sub">Or send a message</p>
+              <ContactForm />
+            </div>
+          </div>
         </section>
       </main>
 
