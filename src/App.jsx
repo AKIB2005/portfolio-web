@@ -357,6 +357,7 @@ export default function App() {
 
   return (
     <>
+      <a className="skip-link mono" href="#about">Skip to content</a>
       <div className="gridbg" aria-hidden="true" />
       <Sky />
       <div className="prog" aria-hidden="true" />
@@ -465,7 +466,7 @@ export default function App() {
                   const Icon = ICONS[t]
                   return (
                     <li key={t}>
-                      <a className="mono" href={h} target="_blank" rel="noopener noreferrer"><Icon />{t}<span aria-hidden="true">↗</span></a>
+                      <a className="mono" href={h} target="_blank" rel="noopener noreferrer" aria-label={`${t} (opens in a new tab)`}><Icon />{t}<span aria-hidden="true">↗</span></a>
                     </li>
                   )
                 })}

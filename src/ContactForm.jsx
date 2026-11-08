@@ -12,6 +12,9 @@ export default function ContactForm() {
     const form = e.currentTarget
     const data = new FormData(form)
     if (data.get('botcheck')) return
+    const name = data.get('name').trim()
+    const email = data.get('email').trim()
+    const message = data.get('message').trim()
     setStatus('sending')
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
@@ -19,11 +22,11 @@ export default function ContactForm() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: FORM_KEY,
-          subject: `Portfolio message from ${data.get('name')}`,
+          subject: `Portfolio message from ${name}`,
           from_name: 'Portfolio contact form',
-          name: data.get('name'),
-          email: data.get('email'),
-          message: data.get('message'),
+          name,
+          email,
+          message,
         }),
       })
       const json = await res.json()
@@ -49,16 +52,16 @@ export default function ContactForm() {
       <div className="cform-row">
         <label>
           <span className="mono">Name</span>
-          <input type="text" name="name" required autoComplete="name" />
+          <input type="text" name="name" required maxLength={80} autoComplete="name" />
         </label>
         <label>
           <span className="mono">Your email</span>
-          <input type="email" name="email" required autoComplete="email" />
+          <input type="email" name="email" required maxLength={120} autoComplete="email" />
         </label>
       </div>
       <label>
         <span className="mono">Message</span>
-        <textarea name="message" rows="4" required />
+        <textarea name="message" rows="4" required maxLength={2000} />
       </label>
       <div className="cform-foot">
         <button className="btn" type="submit" disabled={status === 'sending' || !FORM_KEY}>
