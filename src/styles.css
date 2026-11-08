@@ -84,18 +84,27 @@ h1{font-size:clamp(4rem,19vw,14rem);font-weight:700;line-height:.86;letter-spaci
 .r.in{opacity:1;transform:none}
 .r:not(.in) *{animation-play-state:paused}
 
-section{padding:110px 0 10px;content-visibility:auto;contain-intrinsic-size:auto 700px}
-.stack-pin{height:260vh;padding:0;content-visibility:visible}
-.stack-stage{position:sticky;top:0;height:100svh;display:grid;align-content:center;gap:18px;overflow:hidden}
-.stack-stage .sh{width:100%;margin-bottom:0}
-.stack-rows{width:100%;display:grid;gap:18px;overflow:hidden}
-.stack-row{overflow:hidden}
+section:not(.stack-pin){padding:110px 0 10px;content-visibility:auto;contain-intrinsic-size:auto 700px}
+.stack-pin{height:320vh;padding:110px 0 10px}
+.stack-stage{position:sticky;top:0;height:100svh;display:grid;align-content:center;gap:22px;overflow:hidden;perspective:1100px;contain:layout paint}
+.stack-stage .sh{width:100%;margin-bottom:0;position:relative;z-index:4}
+.stack-ghost,.stack-core,.stack-shock{position:absolute;left:50%;top:50%;pointer-events:none}
+.stack-ghost{z-index:0;font:700 clamp(8rem,28vw,24rem)/1 'Chakra Petch',sans-serif;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.08);opacity:.6;white-space:nowrap}
+.stack-core{z-index:1;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,143,163,.55),transparent 65%);opacity:0;transform:translate(-50%,-50%) scale(.6)}
+.stack-shock{z-index:2;width:200px;height:200px;border:2px solid var(--pink);border-radius:50%;opacity:0;transform:translate(-50%,-50%) scale(.1)}
+.stack-counter{position:relative;z-index:4;color:var(--pink);margin-top:-14px}
+.stack-rows{position:relative;z-index:4;width:100%;display:grid;gap:22px;overflow:hidden}
+.stack-row{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.stack-row:first-child{transform:rotate(-2deg)}
+.stack-row:nth-child(2){transform:rotate(2deg)}
 .stack-track{display:flex;width:max-content;transform-style:preserve-3d}
-.stack-tag{display:block;flex:0 0 auto;white-space:nowrap;font-size:clamp(14px,1.5vw,20px);padding:14px 24px;border:1px solid var(--line);border-radius:4px;transition:border-color .2s,color .2s}
-.stack-tag:hover{border-color:var(--pink);color:var(--pink)}
+.stack-tag{display:block;flex:0 0 auto;white-space:nowrap;font-size:clamp(18px,2.4vw,34px);padding:16px 32px;border:1px solid rgba(255,255,255,.4);border-radius:4px;color:#fff;transition:border-color .2s,color .2s,scale .2s}
+.stack-row:first-child .stack-tag:nth-child(-n+10){background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border-color:rgba(255,255,255,.25);box-shadow:inset 1px 1px 0 rgba(255,255,255,.25)}
 .stack-tag+.stack-tag{margin-left:18px}
+.stack-tag:hover{border-color:var(--pink);color:var(--pink);scale:1.08}
+.stack-tag:hover + .stack-tag,.stack-tag:has(+ .stack-tag:hover){scale:.94}
 .stack-tag.duplicate{opacity:0}
-.stack-row.live .stack-track{animation:stack-slide 35s linear infinite}
+.stack-row.live .stack-track{animation:stack-slide 38s linear infinite}
 .stack-row.live:nth-child(2) .stack-track{animation-direction:reverse}
 .stack-row:hover .stack-track{animation-play-state:paused}
 @keyframes stack-slide{to{transform:translateX(-50%)}}
@@ -166,11 +175,13 @@ dd a:hover{color:var(--pink)}
   .stack-pin{height:auto}
   .stack-stage{position:relative;height:auto;min-height:0;padding-top:110px;padding-bottom:70px}
   .stack-stage .sh{margin-bottom:44px}
+  .stack-counter{display:none}
+  .stack-ghost,.stack-core,.stack-shock{display:none}
   .stack-rows{gap:10px}
   .stack-row{animation:stack-mobile-in .8s var(--ease) both}
   .stack-row:nth-child(2){animation-delay:.12s}
   .stack-track{width:max-content;animation:stack-slide 35s linear infinite}
-  .stack-tag{font-size:14px;opacity:1!important;transform:none!important;will-change:auto!important}
+  .stack-tag{font-size:14px;padding:10px 18px;opacity:1!important;transform:none!important;will-change:auto!important}
   .stack-tag.duplicate{display:block;opacity:1!important}
   @keyframes stack-mobile-in{from{opacity:0;transform:translateY(16px)}}
   .stack-static{padding-bottom:10px}
@@ -179,6 +190,8 @@ dd a:hover{color:var(--pink)}
   .stack-pin{height:auto}
   .stack-stage{position:relative;height:auto;min-height:0;padding-top:110px;padding-bottom:70px}
   .stack-stage .sh{margin-bottom:44px}
+  .stack-counter{display:none}
+  .stack-ghost,.stack-core,.stack-shock{display:none}
   .stack-tag{opacity:1!important;transform:none!important;will-change:auto!important}
   .stack-tag+.stack-tag{margin-left:0}
   .stack-tag.duplicate{display:none}
@@ -210,6 +223,8 @@ html[data-motion=off] .boot{display:none}
 html[data-motion=off] .stack-pin{height:auto}
 html[data-motion=off] .stack-stage{position:relative;height:auto;min-height:0;padding-top:110px;padding-bottom:70px}
 html[data-motion=off] .stack-stage .sh{margin-bottom:44px}
+html[data-motion=off] .stack-counter{display:none}
+html[data-motion=off] .stack-ghost,html[data-motion=off] .stack-core,html[data-motion=off] .stack-shock{display:none}
 html[data-motion=off] .stack-tag{opacity:1!important;transform:none!important;will-change:auto!important}
 html[data-motion=off] .stack-tag.duplicate{display:none}
 html[data-motion=off] .stack-track{flex-wrap:wrap;width:auto;gap:8px}

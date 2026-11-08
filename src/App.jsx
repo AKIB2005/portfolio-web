@@ -49,11 +49,19 @@ function StackSection() {
   const originalRefs = useRef([])
   const duplicateRefs = useRef([])
   const rowsRef = useRef([])
+  const ghostRef = useRef(null)
+  const coreRef = useRef(null)
+  const shockRef = useRef(null)
+  const counterRef = useRef(null)
 
   useEffect(() => {
     const pin = pinRef.current
     const stage = stageRef.current
-    if (!pin || !stage) return undefined
+    const ghost = ghostRef.current
+    const core = coreRef.current
+    const shock = shockRef.current
+    const counter = counterRef.current
+    if (!pin || !stage || !ghost || !core || !shock || !counter) return undefined
 
     let active = false
     let ticking = false
@@ -62,12 +70,27 @@ function StackSection() {
     let pinHeight = 0
     let viewportHeight = innerHeight
     let centers = []
+    let lastP = -1
+    let lastScrollY = scrollY
+    let lastTime = performance.now()
+    let decayFrame = 0
+    let stopTimer = 0
+    const tracks = rowsRef.current.map((row) => row?.querySelector('.stack-track'))
     const reduceQuery = matchMedia('(prefers-reduced-motion: reduce)')
     const isMotionEnabled = () => motionOn() && !reduceQuery.matches && innerWidth >= 700
     const clamp = (n, min, max) => Math.min(max, Math.max(min, n))
+    const easeOutCubic = (n) => 1 - ((1 - n) ** 3)
+    const easeInCubic = (n) => n ** 3
     const easeInOutCubic = (n) => n < 0.5 ? 4 * n ** 3 : 1 - ((-2 * n + 2) ** 3) / 2
+    const easeOutBack = (n) => {
+      const c1 = 1.2
+      const c3 = c1 + 1
+      return 1 + c3 * (n - 1) ** 3 + c1 * (n - 1) ** 2
+    }
 
     const measure = () => {
+      originalRefs.current.forEach((el) => { el.style.transform = ''; el.style.opacity = ''; el.style.willChange = '' })
+      duplicateRefs.current.forEach((el) => { el.style.opacity = '' })
       rowsRef.current.forEach((el) => el?.classList.remove('live'))
       const pinRect = pin.getBoundingClientRect()
       const stageRect = stage.getBoundingClientRect()
@@ -78,54 +101,117 @@ function StackSection() {
         const rect = el.getBoundingClientRect()
         return { dx: rect.left + rect.width / 2 - (stageRect.left + stageRect.width / 2), dy: rect.top + rect.height / 2 - (stageRect.top + stageRect.height / 2) }
       })
+      lastP = -1
     }
 
     const reset = () => {
       originalRefs.current.forEach((el) => { el.style.transform = ''; el.style.opacity = ''; el.style.willChange = '' })
       duplicateRefs.current.forEach((el) => { el.style.opacity = '' })
       rowsRef.current.forEach((el) => el?.classList.remove('live'))
+      ghost.style.transform = ''
+      core.style.transform = ''
+      core.style.opacity = ''
+      shock.style.transform = ''
+      shock.style.opacity = ''
+      counter.textContent = ''
+      lastP = -1
     }
 
-    const apply = () => {
+    const decay = () => {
+      decayFrame = 0
+      let done = true
+      tracks.forEach((track) => {
+        if (!track) return
+        const animation = track.getAnimations()[0]
+        if (!animation) return
+        const current = Number(animation.playbackRate) || 1
+        const next = current + (1 - current) * 0.18
+        animation.playbackRate = next
+        if (Math.abs(next - 1) > 0.02) done = false
+        else animation.playbackRate = 1
+      })
+      if (!done) decayFrame = requestAnimationFrame(decay)
+    }
+
+    const apply = (velocity) => {
       ticking = false
       if (!active || !eligible || !isMotionEnabled()) { reset(); return }
       const range = Math.max(1, pinHeight - viewportHeight)
       const p = clamp((scrollY - pinTop) / range, 0, 1)
-      const marquee = p >= 0.72
-      const burstProgress = clamp((p - 0.12) / 0.6, 0, 1)
-      const t = easeInOutCubic(burstProgress)
-      const s = Math.sin(Math.PI * t)
+      if (lastP >= 0 && Math.abs(p - lastP) < 0.0005) return
+      lastP = p
+      ghost.style.transform = `translateX(${(p - 0.5) * -12}vw)`
+      if (p >= 0.8) {
+        originalRefs.current.forEach((el) => { el.style.transform = ''; el.style.opacity = ''; el.style.willChange = '' })
+        rowsRef.current.forEach((el) => el?.classList.add('live'))
+        duplicateRefs.current.forEach((el) => { el.style.opacity = '' })
+        counter.textContent = '22 / 22 technologies'
+        const rate = 1 + clamp(Math.abs(velocity) / 30, 0, 5)
+        tracks.forEach((track) => {
+          const animation = track?.getAnimations()[0]
+          if (animation) animation.playbackRate = rate
+        })
+        if (decayFrame) cancelAnimationFrame(decayFrame)
+        if (Math.abs(velocity) < 0.02) decayFrame = requestAnimationFrame(decay)
+        return
+      }
+      rowsRef.current.forEach((el) => el?.classList.remove('live'))
+      const orbit = clamp(p / 0.25, 0, 1)
+      const compress = clamp((p - 0.25) / 0.13, 0, 1)
+      const supernova = clamp((p - 0.38) / 0.14, 0, 1)
+      const coreOpacity = p < 0.42 ? clamp((p - 0.2) / 0.15, 0, 1) : 1 - clamp((p - 0.42) / 0.1, 0, 1)
+      core.style.opacity = String(coreOpacity)
+      core.style.transform = `translate(-50%,-50%) scale(${0.6 + 1.2 * coreOpacity})`
+      shock.style.transform = `translate(-50%,-50%) scale(${0.1 + supernova * 4.2})`
+      shock.style.opacity = String((1 - supernova) * 0.9)
+      const radius = Math.min(innerWidth * (innerWidth < 900 ? 0.32 : 0.34), innerWidth < 900 ? 150 : 300)
+      const compressedRadius = radius * (1 - 0.88 * easeInCubic(compress))
+      const radiusA = radius * (0.55 + 0.45 * easeOutCubic(clamp(p / 0.2, 0, 1)))
+      const sphereRadius = p < 0.25 ? radiusA : compressedRadius
+      const finalAngle = orbit * Math.PI * 4 + compress * compress * Math.PI * 2
+      let burstCount = 0
       originalRefs.current.forEach((el, i) => {
-        if (marquee) {
-          el.style.transform = ''
-          el.style.opacity = ''
-          el.style.willChange = ''
-          return
-        }
-        const pileX = ((i * 37) % 11 - 5) * 6
-        const pileY = ((i * 53) % 9 - 4) * 7
-        const pileRot = ((i * 29) % 13 - 6) * 2.2
-        const shiftedT = easeInOutCubic(clamp(burstProgress - (i / 22) * 0.08, 0, 1))
-        const shiftedS = Math.sin(Math.PI * shiftedT)
+        const y0 = 1 - (i / 21) * 2
+        const sphereRadius = Math.sqrt(1 - y0 * y0)
+        const theta = i * 2.399963
+        const x0 = Math.cos(theta) * sphereRadius
+        const z0 = Math.sin(theta) * sphereRadius
+        const xSphere = x0 * Math.cos(finalAngle) + z0 * Math.sin(finalAngle)
+        const zSphere = -x0 * Math.sin(finalAngle) + z0 * Math.cos(finalAngle)
+        const sx = xSphere * sphereRadius * (p < 0.25 ? radiusA : 0.12 * radius)
+        const sy = y0 * (p < 0.25 ? radiusA : 0.12 * radius) * 0.9
+        const sz = zSphere * (p < 0.25 ? radiusA : 0.12 * radius)
+        const depth = (zSphere + 1) / 2
+        const sphereOpacity = (0.3 + 0.7 * depth) * clamp(p / 0.08, 0, 1)
+        const sphereScale = 0.75 + 0.25 * depth
+        const u = clamp(((p - 0.38) / 0.4 - (i / 22) * 0.18) / 0.82, 0, 1)
+        const e = easeOutBack(u)
+        const speed = Math.sin(Math.PI * u)
         const side = i < STACK_ROW_1.length ? -1 : 1
         const center = centers[i] || { dx: 0, dy: 0 }
-        const compress = clamp(p / 0.12, 0, 1)
-        const pileScale = p < 0.12 ? 1 + 0.06 * compress : 1
-        const pileOffset = p < 0.12 ? 1 - 0.3 * compress : 1
-        const x = (pileX * pileOffset - center.dx) * (1 - shiftedT) + side * shiftedS * Math.min(innerWidth * 0.34, 460)
-        const y = (pileY * pileOffset - center.dy) * (1 - shiftedT) - shiftedS * 40
-        const rotation = pileRot * (1 - shiftedT) + side * shiftedS * 14
-        const scale = (0.8 + 0.2 * shiftedT) * pileScale
-        el.style.transform = `translate3d(${x}px,${y}px,0) rotate(${rotation}deg) scale(${scale})`
-        el.style.opacity = String(0.45 + 0.55 * Math.max(shiftedT, i / 21))
-        el.style.willChange = p > 0 && p < 0.72 ? 'transform, opacity' : ''
+        const x = p < 0.38 ? sx - center.dx : (sx - center.dx) * (1 - e)
+        const y = p < 0.38 ? sy - center.dy : (sy - center.dy) * (1 - e) - side * speed * (110 + (i % 5) * 16)
+        const z = p < 0.38 ? sz : sz * (1 - e)
+        const scaleX = p < 0.38 ? sphereScale : (0.75 + 0.25 * e) * (1 + 0.5 * speed)
+        const scaleY = p < 0.38 ? sphereScale : (0.75 + 0.25 * e) * (1 - 0.12 * speed)
+        el.style.transform = `translate3d(${x}px,${y}px,${z}px) scale(${scaleX},${scaleY})`
+        el.style.opacity = String(p < 0.38 ? sphereOpacity : sphereOpacity + (1 - sphereOpacity) * e)
+        el.style.willChange = p > 0 && p < 0.8 ? 'transform' : ''
+        if (u >= 1) burstCount += 1
       })
-      const duplicateOpacity = clamp((p - 0.6) / 0.12, 0, 1)
-      duplicateRefs.current.forEach((el) => { el.style.opacity = String(duplicateOpacity) })
-      rowsRef.current.forEach((el) => el?.classList.toggle('live', marquee))
+      const count = Math.min(22, burstCount)
+      if (counter.textContent !== `${String(count).padStart(2, '0')} / 22 technologies`) counter.textContent = `${String(count).padStart(2, '0')} / 22 technologies`
     }
     const onScroll = () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(apply) }
+      const now = performance.now()
+      const velocity = (scrollY - lastScrollY) / Math.max(16, now - lastTime) * 16
+      lastScrollY = scrollY
+      lastTime = now
+      clearTimeout(stopTimer)
+      stopTimer = window.setTimeout(() => {
+        if (active && lastP >= 0.8 && !decayFrame) decayFrame = requestAnimationFrame(decay)
+      }, 100)
+      if (!ticking) { ticking = true; requestAnimationFrame(() => apply(velocity)) }
     }
     const setActive = (next) => {
       active = next
@@ -155,6 +241,8 @@ function StackSection() {
       observer.disconnect()
       reduceQuery.removeEventListener?.('change', onMotionChange)
       removeEventListener('scroll', onScroll)
+      if (decayFrame) cancelAnimationFrame(decayFrame)
+      clearTimeout(stopTimer)
     }
   }, [])
 
@@ -171,7 +259,11 @@ function StackSection() {
     <>
       <section id="stack" ref={pinRef} className="stack-pin">
         <div ref={stageRef} className="stack-stage wrap">
+          <div ref={ghostRef} className="stack-ghost" aria-hidden="true">STACK</div>
+          <div ref={coreRef} className="stack-core" aria-hidden="true" />
+          <div ref={shockRef} className="stack-shock" aria-hidden="true" />
           <Head n="04" title="Stack" />
+          <p ref={counterRef} className="stack-counter mono">00 / 22 technologies</p>
           <div className="stack-rows">
             {renderRow(STACK_ROW_1, 0)}
             {renderRow(STACK_ROW_2, 1)}
