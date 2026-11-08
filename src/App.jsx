@@ -69,9 +69,13 @@ export default function App() {
     const so = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((l) => l.classList.toggle('on', l.hash === '#' + e.target.id)) }), { rootMargin: '-45% 0px -50% 0px' })
     document.querySelectorAll('header[id],section[id]').forEach((s) => so.observe(s))
 
+<<<<<<< HEAD
     const m = { x: -100, y: -100, cx: -100, cy: -100, tx: 0, ty: 0, rx: 0, ry: 0, v: 0 }
     const letters = [...document.querySelectorAll('.ltr')], mq = q('.marquee')
     let lastY = scrollY, vt = 0
+=======
+    const m = { x: -100, y: -100, cx: -100, cy: -100, tx: 0, ty: 0, rx: 0, ry: 0 }
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
     const onMove = (e) => {
       m.x = e.clientX; m.y = e.clientY
       m.tx = e.clientX / innerWidth - 0.5; m.ty = e.clientY / innerHeight - 0.5
@@ -87,7 +91,10 @@ export default function App() {
       const h = root.scrollHeight - innerHeight
       root.style.setProperty('--sp', h > 0 ? (scrollY / h).toFixed(4) : 0)
       root.style.setProperty('--sy', Math.round(scrollY))
+<<<<<<< HEAD
       vt += scrollY - lastY; lastY = scrollY
+=======
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
     }
     let raf
     const loop = () => {
@@ -97,6 +104,7 @@ export default function App() {
       if (ring) ring.style.transform = `translate(${m.cx}px,${m.cy}px)`
       if (dot) dot.style.transform = `translate(${m.x}px,${m.y}px)`
       if (sw) sw.style.transform = root.dataset.motion === 'off' ? '' : `rotateX(${m.rx}deg) rotateY(${m.ry}deg)`
+<<<<<<< HEAD
       const live = root.dataset.motion !== 'off'
       // Headline letters rise toward the cursor.
       if (live && root.classList.contains('ready') && scrollY < innerHeight * 0.8) {
@@ -110,6 +118,8 @@ export default function App() {
       // Stack strip leans with scroll speed.
       m.v += (vt - m.v) * 0.12; vt *= 0.88
       if (mq) mq.style.setProperty('--vel', live ? Math.max(-14, Math.min(14, m.v * 0.18)).toFixed(2) : 0)
+=======
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
       raf = requestAnimationFrame(loop)
     }
     addEventListener('pointermove', onMove)
@@ -196,15 +206,25 @@ export default function App() {
             <p className="r" data-r style={{ '--d': 2 }}>My long-term goal is agentic AI: software that plans and acts on its own, built on solid fundamentals.</p>
           </div>
           <dl>
+<<<<<<< HEAD
             {FACTS.map(([k, v, href], i) => (<div key={k} className="r" data-r style={{ '--d': i }}><dt>{k}</dt><dd>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{v}</a> : v}</dd></div>))}
+=======
+            {FACTS.map(([k, v], i) => (<div key={k} className="r" data-r style={{ '--d': i }}><dt>{k}</dt><dd>{v}</dd></div>))}
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
           </dl>
         </section>
 
         <section id="projects" className="wrap">
           <h2 className="hd" data-r><Words t="Project" /></h2>
+<<<<<<< HEAD
           {PROJECTS.map((p, i) => (
             <div key={p.title} className="r" data-r style={{ '--d': i }}>
               <Tilt className={'project' + (i % 2 ? ' flip' : '')}>
+=======
+          {PROJECTS.map((p) => (
+            <div key={p.title} className="r" data-r>
+              <Tilt className="project">
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
                 <div>
                   <p className="status">{p.status}</p>
                   <h3>{p.title}</h3>
@@ -215,6 +235,7 @@ export default function App() {
                     <a className="btn ghost mag" href={p.source} target="_blank" rel="noopener noreferrer">View source</a>
                   </div>
                 </div>
+<<<<<<< HEAD
                 {p.kind === 'spam' ? (
                   <div className="mock" aria-hidden="true">
                     <span className="beam" />
@@ -234,6 +255,15 @@ export default function App() {
                     <small>Illustration: matches ranked by eligibility, with deadlines tracked.</small>
                   </div>
                 )}
+=======
+                <div className="mock" aria-hidden="true">
+                  <span className="beam" />
+                  <p>Subject: You’ve <mark style={{ '--t': 0.6 }}>won</mark> a <mark style={{ '--t': 0.75 }}>free</mark> prize</p>
+                  <p>Hi team, notes from today’s meeting are attached.</p>
+                  <p><mark style={{ '--t': 2.7 }}>Claim</mark> your reward <mark style={{ '--t': 2.85 }}>now</mark>, limited offer</p>
+                  <small>Illustration: the words that push a score toward spam get highlighted.</small>
+                </div>
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
               </Tilt>
             </div>
           ))}
@@ -255,7 +285,10 @@ export default function App() {
         </section>
       </main>
 
+<<<<<<< HEAD
       <div className="bigname r" data-r aria-hidden="true">AKIB SHAIKH</div>
+=======
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
       <footer className="wrap"><span>© 2026 {PROFILE.name}</span><span><Clock /></span></footer>
     </>
   )

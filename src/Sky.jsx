@@ -36,7 +36,11 @@ export default function Sky() {
         const dx = sx - W / 2, dy = sy - H / 2, d = Math.hypot(dx, dy) || 1
         sx = W / 2 + dx * f; sy = H / 2 + dy * f
         x.globalAlpha = 0.25 + 0.6 * tw * (s.z / 1.9)
+<<<<<<< HEAD
         x.fillStyle = x.strokeStyle = s.z > 1.6 ? '#ffc98a' : '#ffffff'
+=======
+        x.fillStyle = x.strokeStyle = s.z > 1.6 ? '#ffc98a' : '#e8ecf4'
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
         if (k < 1) {
           const len = (1 - e) * 140 * s.z
           x.lineWidth = s.z * 0.8
@@ -50,7 +54,11 @@ export default function Sky() {
         if (shoot) {
           shoot.x += 10; shoot.y += 4.4; shoot.l++
           const g = x.createLinearGradient(shoot.x, shoot.y, shoot.x - 90, shoot.y - 40)
+<<<<<<< HEAD
           g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,0)')
+=======
+          g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(157,184,255,0)')
+>>>>>>> 9bbe2c31b1c4d71a0622d6afec29fc25bf6a8e22
           x.globalAlpha = 1 - shoot.l / 55; x.strokeStyle = g; x.lineWidth = 1.6
           x.beginPath(); x.moveTo(shoot.x, shoot.y); x.lineTo(shoot.x - 90, shoot.y - 40); x.stroke()
           if (shoot.l > 55) shoot = null
