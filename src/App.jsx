@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import Sky from './Sky'
 import ContactForm from './ContactForm'
-import { PROFILE, FACTS, FEATURED, MORE, OSS, HACKS, STACK, STACK_ROW_1, STACK_ROW_2 } from './data'
+import { ICONS } from './Icons'
+import { PROFILE, FACTS, FEATURED, STACK, STACK_ROW_1, STACK_ROW_2 } from './data'
 
-const LINKS = [['#about', 'About'], ['#work', 'Work'], ['#community', 'Community'], ['#stack', 'Stack'], ['#contact', 'Contact']]
+const LINKS = [['#about', 'About'], ['#work', 'Work'], ['#stack', 'Stack'], ['#contact', 'Contact']]
 const MARQUEE = ['MongoDB', 'Express', 'React', 'Node.js', 'TypeScript', 'Python', 'Flutter', 'Firebase', 'Flask', 'DSA', 'Agentic AI']
 const LAT = [[1, 0], [0.8, 0.6], [0.8, -0.6]]
 const motionOn = () => document.documentElement.dataset.motion !== 'off'
@@ -40,7 +41,7 @@ const Head = ({ n, title }) => (
 function Clock() {
   const [t, setT] = useState(() => new Date())
   useEffect(() => { const i = setInterval(() => setT(new Date()), 30000); return () => clearInterval(i) }, [])
-  return <>{t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })} in Solapur</>
+  return <>{t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })} IST</>
 }
 
 function StackSection() {
@@ -262,7 +263,7 @@ function StackSection() {
           <div ref={ghostRef} className="stack-ghost" aria-hidden="true">STACK</div>
           <div ref={coreRef} className="stack-core" aria-hidden="true" />
           <div ref={shockRef} className="stack-shock" aria-hidden="true" />
-          <Head n="04" title="Stack" />
+          <Head n="03" title="Stack" />
           <p ref={counterRef} className="stack-counter mono">00 / 22 technologies</p>
           <div className="stack-rows">
             {renderRow(STACK_ROW_1, 0)}
@@ -385,7 +386,7 @@ export default function App() {
         <div className="wrap">
           <p className="mono over">Portfolio / 2026<i className="caret" /></p>
           <h1 aria-label="Akib Shaikh"><Name /></h1>
-          <p className="mono role">Full stack developer <span>/</span> T.Y. CSE <span>/</span> Solapur</p>
+          <p className="mono role">Full stack developer <span>/</span> Agentic AI</p>
           <p className="lede">I build web apps with the MERN stack and I’m working toward AI agents that act. Open to internships and open-source work.</p>
           <div className="row">
             <a className="btn mag" href="#work">View my work</a>
@@ -405,7 +406,7 @@ export default function App() {
           <div className="about">
             <div>
               <p className="big r" data-r>I build web apps with the MERN stack, and I’m learning to build agents that act.</p>
-              <p className="muted r" data-r style={{ '--d': 1 }}>I started with the web and kept going deeper: React on the front, Node, Express and MongoDB behind it. I practise DSA so the code I write holds up, and I contribute to open-source repositories to learn from real codebases.</p>
+              <p className="muted r" data-r style={{ '--d': 1 }}>I started with the web and kept going deeper: React on the front, Node, Express and MongoDB behind it. I practise DSA so the code I write holds up.</p>
             </div>
             <dl>
               {FACTS.map(([k, v, href], i) => (
@@ -449,45 +450,25 @@ export default function App() {
               </Tilt>
             </div>
           ))}
-          <div className="more">
-            {MORE.map((m, i) => (
-              <div key={m.title} className="mrow r" data-r style={{ '--d': i }}>
-                <span className="mono n">0{i + 3}</span>
-                <div><h3>{m.title}</h3><span className="mono tag">{m.tag}</span></div>
-                <p className="muted">{m.text}</p>
-                <span className="mono st">{m.stack}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="community" className="wrap">
-          <Head n="03" title="Community" />
-          <div className="two">
-            <div>
-              <h4 className="mono sub r" data-r>Open source / GSSoC 2026</h4>
-              {OSS.map(([repo, what], i) => <div key={repo} className="li r" data-r style={{ '--d': i }}><b className="mono">{repo}</b><p className="muted">{what}</p></div>)}
-              <a className="more-link mono" href={PROFILE.github} target="_blank" rel="noopener noreferrer">More on GitHub ↗</a>
-            </div>
-            <div>
-              <h4 className="mono sub r" data-r>Hackathons</h4>
-              {HACKS.map(([d, t, w], i) => <div key={t} className="li r" data-r style={{ '--d': i }}><b className="mono">{d}</b><h5>{t}</h5><p className="muted">{w}</p></div>)}
-            </div>
-          </div>
         </section>
 
         <StackSection />
 
         <section id="contact" className="wrap">
-          <Head n="05" title="Contact" />
+          <Head n="04" title="Contact" />
           <div className="contact-grid">
             <div>
               <p className="big r" data-r>Open to collaborations, open-source work and internships.</p>
               <a className="mail r" data-r href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
               <ul className="socials r" data-r>
-                {[['GitHub', PROFILE.github], ['LinkedIn', PROFILE.linkedin], ['X', PROFILE.x], ['Instagram', PROFILE.instagram]].map(([t, h]) => (
-                  <li key={t}><a className="mono" href={h} target="_blank" rel="noopener noreferrer">{t} ↗</a></li>
-                ))}
+                {[['GitHub', PROFILE.github], ['LinkedIn', PROFILE.linkedin], ['X', PROFILE.x], ['Instagram', PROFILE.instagram]].map(([t, h]) => {
+                  const Icon = ICONS[t]
+                  return (
+                    <li key={t}>
+                      <a className="mono" href={h} target="_blank" rel="noopener noreferrer"><Icon />{t}<span aria-hidden="true">↗</span></a>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
             <div className="r" data-r style={{ '--d': 1 }}>

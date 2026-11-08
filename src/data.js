@@ -9,10 +9,7 @@ export const PROFILE = {
 }
 
 export const FACTS = [
-  ['Course', 'Computer Science Engineering, T.Y.'],
-  ['Based in', 'Solapur, Maharashtra'],
   ['Stack', 'MERN, DSA'],
-  ['Open source', 'GSSoC 2026'],
   ['Focus', 'Agentic AI'],
   ['More info', 'github.com/AKIB2005', PROFILE.github],
 ]
@@ -36,26 +33,6 @@ export const FEATURED = [
     source: 'https://github.com/AKIB2005/email-spam-detector',
     kind: 'spam',
   },
-]
-
-export const MORE = [
-  { title: 'CommunityBridge', tag: 'Google Solution Challenge 2026', stack: 'Flutter, Firebase, Gemini API', text: 'NGO volunteer matching with Gemini-based urgency scoring, NGO dashboards and Firebase matching. I lead the team and handle the full-stack work.' },
-  { title: 'DevDNA', tag: 'College mini-project', stack: 'Flask, D3.js, GitHub REST API', text: 'A GitHub profile analyzer with caching, language analysis, archetype detection, a compare mode and export.' },
-]
-
-export const OSS = [
-  ['VISUALAIZE', 'Export as PNG with html-to-image, plus architecture diagram docs'],
-  ['fetchai / innovation-lab-examples', 'A real-time weather monitoring agent'],
-  ['AlgoScope', '404 page redesign with React and Framer Motion'],
-  ['career-pilot', 'Holographic ResumeCTA component'],
-  ['CreatorOs', 'Dashboard modularization'],
-  ['LuvLyricsApp', 'Magic number refactor'],
-]
-
-export const HACKS = [
-  ['Oct 2026', 'Hacktoberfest Hack Day Pune', 'Cloud Native Pune with MLH. Built a project with teammates among 400+ builders and presented it to the evaluators.'],
-  ['Nov 2026', 'THE OUTPOST, Frontend Arena', 'Six-hour online solo frontend hackathon. Built Grantly.'],
-  ['Nov 2026', 'CodersInPune Hackathon', 'Team PROTEAS on a knowledge-handover platform. I build the backend and the extraction-to-verification pipeline.'],
 ]
 
 export const STACK_ROW_1 = ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'React', 'Framer Motion', 'Java', 'Python', 'C', 'C++']
