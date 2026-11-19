@@ -69,17 +69,22 @@ export default function Flower() {
         ctx.strokeStyle = light ? 'rgba(60,57,51,.40)' : 'rgba(200,207,208,.43)'
         ctx.lineWidth = Math.max(.55, .9 * scale)
         ctx.beginPath(); ctx.moveTo(bx, by); ctx.quadraticCurveTo(cx + bend * .45, cy, endX, endY); ctx.stroke()
+        // Fine side shoots remain attached to the main stem as it bends.
+        const forkX = .25 * bx + .5 * (cx + bend * .45) + .25 * endX
+        const forkY = .25 * by + .5 * cy + .25 * endY
+        ctx.beginPath(); ctx.moveTo(forkX, forkY); ctx.quadraticCurveTo(forkX + 5 * scale + bend * .2, forkY - 22 * scale, forkX + 18 * scale + tip * .45, forkY - 38 * scale); ctx.stroke()
         STRANDS.forEach((strand, j) => {
           const flutter = still ? 0 : Math.sin(time * .9 + strand.phase + branch.phase) * .045 + s.tip * .003
-          const a = strand.angle + flutter, length = branch.size * strand.length * scale
+          const a = strand.angle + flutter, length = branch.size * strand.length * scale * (1 + .1 * Math.sin(strand.phase + branch.phase))
           const ex = endX + Math.cos(a) * length, ey = endY + Math.sin(a) * length
           const mx = endX + Math.cos(a) * length * .65, my = endY + Math.sin(a) * length * .65
           ctx.strokeStyle = light ? 'rgba(66,62,56,.32)' : 'rgba(205,212,213,.34)'
           ctx.lineWidth = Math.max(.45, .58 * scale)
           ctx.beginPath(); ctx.moveTo(endX, endY); ctx.quadraticCurveTo(mx - Math.sin(a) * 2 * scale, my + Math.cos(a) * 2 * scale, ex, ey)
-          const fork = 6 * scale
+          const fork = 8 * scale
           ctx.moveTo(mx, my); ctx.lineTo(mx + Math.cos(a - .45) * fork, my + Math.sin(a - .45) * fork)
-          ctx.moveTo(mx, my); ctx.lineTo(mx + Math.cos(a + .45) * fork, my + Math.sin(a + .45) * fork); ctx.stroke()
+          ctx.moveTo(mx, my); ctx.lineTo(mx + Math.cos(a + .45) * fork, my + Math.sin(a + .45) * fork)
+          ctx.moveTo(endX + (ex - endX) * .82, endY + (ey - endY) * .82); ctx.lineTo(ex + Math.cos(a + .55) * fork * .45, ey + Math.sin(a + .55) * fork * .45); ctx.stroke()
           if (j === (i * 7 + 3) % STRANDS.length) {
             const alpha = still ? .55 : .48 + .18 * Math.sin(time * .7 + i * 2)
             ctx.fillStyle = light ? `rgba(151,100,35,${alpha * .65})` : `rgba(235,193,107,${alpha})`

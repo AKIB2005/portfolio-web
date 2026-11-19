@@ -66,6 +66,7 @@ export default function ContactForm() {
       <div className="cform-foot">
         <button className="btn" type="submit" disabled={status === 'sending' || !FORM_KEY}>
           {status === 'sending' ? 'Sending…' : 'Send message'}
+          <span className="send-arrow" aria-hidden="true">↗</span>
         </button>
         <p className="cstatus mono" role="status" aria-live="polite">
           {!FORM_KEY && 'The form is not configured yet. Please use the email link.'}

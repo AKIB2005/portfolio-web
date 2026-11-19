@@ -1,20 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
-import { FEATURED, PROFILE } from './data'
+import { FEATURED } from './data'
+import { SOCIALS, copyDiscord, DISCORD_USERNAME } from './SocialLinks'
 
 const commands = [
   ...[['Home', '#home'], ['Work', '#work'], ['Profile', '#profile'], ['About', '#about'], ['Education', '#education'], ['Achievements', '#achievements'], ['Skills', '#skills'], ['Contact', '#contact'], ['Resume', '#resume']].map(([label, href]) => ({ label, href, group: 'Navigation' })),
   ...FEATURED.map(project => ({ label: project.title, href: `#project-${project.title.toLowerCase()}`, group: 'Projects' })),
-  ...[['GitHub', PROFILE.github], ['LinkedIn', PROFILE.linkedin]].map(([label, href]) => ({ label, href, group: 'External links', external: true })),
+  ...SOCIALS.filter(social => !social.action).map(social => ({ ...social, group: 'Socials' })),
+  { label: 'Copy Discord username', group: 'Actions', action: 'copy-discord', Icon: SOCIALS.find(social => social.label === 'Discord').Icon, keywords: 'Discord akib2885' },
 ]
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
+  const [closing, setClosing] = useState(false)
+  const [notice, setNotice] = useState('')
   const input = useRef(null), dialog = useRef(null), previous = useRef(null)
-  const results = commands.filter(command => `${command.label} ${command.group}`.toLowerCase().includes(query.trim().toLowerCase()))
-  const show = () => { previous.current = document.activeElement; setQuery(''); setActive(0); setOpen(true) }
-  const close = () => { setOpen(false); requestAnimationFrame(() => previous.current?.focus()) }
+  const closeTimer = useRef(null)
+  const results = commands.filter(command => `${command.label} ${command.group} ${command.keywords || ''}`.toLowerCase().includes(query.trim().toLowerCase()))
+  const show = () => { clearTimeout(closeTimer.current); previous.current = document.activeElement; setQuery(''); setActive(0); setClosing(false); setOpen(true) }
+  const close = () => { if (closing) return; setClosing(true); const delay = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 140; closeTimer.current = setTimeout(() => { setOpen(false); setClosing(false); previous.current?.focus() }, delay) }
+  useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   useEffect(() => {
     const shortcut = event => {
@@ -28,10 +34,12 @@ export default function CommandPalette() {
   useEffect(() => { if (open) input.current?.focus() }, [open])
   useEffect(() => { if (open && results[active]) document.getElementById(`command-${active}`)?.scrollIntoView({ block: 'nearest' }) }, [active, open, query])
 
-  const run = command => {
+  const run = async command => {
     if (!command) return
+    if (command.action === 'copy-discord') { const copied = await copyDiscord(); setNotice(copied ? `Copied Discord username: ${DISCORD_USERNAME}` : `Could not copy. Discord username: ${DISCORD_USERNAME}`); close(); return }
     close()
     if (command.external) window.open(command.href, '_blank', 'noopener,noreferrer')
+    else if (command.href.startsWith('mailto:')) window.location.href = command.href
     else { if (window.location.hash === command.href) window.dispatchEvent(new HashChangeEvent('hashchange')); else window.location.hash = command.href; requestAnimationFrame(() => document.getElementById(command.href.slice(1))?.scrollIntoView()) }
   }
   const onKeyDown = event => {
@@ -49,15 +57,16 @@ export default function CommandPalette() {
 
   return <>
     <button className="command-trigger" type="button" onClick={show} aria-label="Open command palette">Search <kbd>Ctrl K</kbd></button>
-    {open && <div className="command-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) close() }}>
+    <span className="sr-only" role="status" aria-live="polite">{notice}</span>
+    {open && <div className={`command-backdrop${closing ? ' is-closing' : ''}`} onMouseDown={event => { if (event.target === event.currentTarget) close() }}>
       <div className="command-dialog" role="dialog" aria-modal="true" aria-labelledby="command-title" ref={dialog} onKeyDown={onKeyDown}>
         <div className="command-header"><label id="command-title" htmlFor="command-search">Search portfolio</label><button type="button" onClick={close} aria-label="Close command palette">Esc</button></div>
-        <input ref={input} id="command-search" value={query} onChange={event => { setQuery(event.target.value); setActive(0) }} placeholder="Search pages, projects, links…" autoComplete="off" role="combobox" aria-expanded="true" aria-controls="command-results" aria-activedescendant={results.length ? `command-${active}` : undefined} />
+        <div className="command-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input ref={input} id="command-search" value={query} onChange={event => { setQuery(event.target.value); setActive(0) }} placeholder="Search pages, projects, socials…" autoComplete="off" role="combobox" aria-expanded="true" aria-controls="command-results" aria-activedescendant={results.length ? `command-${active}` : undefined} /></div>
         <div id="command-results" className="command-results" role="listbox" aria-label="Commands">
-          {['Navigation', 'Projects', 'External links'].map(group => { const groupResults = results.filter(command => command.group === group); return groupResults.length ? <div key={group} role="group" aria-label={group}><p>{group}</p>{groupResults.map(command => { const index = results.indexOf(command); return <div id={`command-${index}`} key={command.label} role="option" aria-selected={index === active} className={index === active ? 'command-option selected' : 'command-option'} onMouseMove={() => setActive(index)} onClick={() => run(command)}>{command.label}<span aria-hidden="true">{command.external ? '↗' : '↵'}</span></div> })}</div> : null })}
+          {['Navigation', 'Projects', 'Socials', 'Actions'].map(group => { const groupResults = results.filter(command => command.group === group); return groupResults.length ? <div key={group} role="group" aria-label={group}><p>{group}</p>{groupResults.map(command => { const index = results.indexOf(command), Icon = command.Icon; return <div id={`command-${index}`} key={command.label} role="option" aria-selected={index === active} className={index === active ? 'command-option selected' : 'command-option'} onMouseMove={() => setActive(index)} onClick={() => run(command)}><span className="command-option-label"><span className="command-icon" aria-hidden="true">{Icon ? <Icon /> : group === 'Projects' ? '◇' : '↗'}</span>{command.label}</span><span aria-hidden="true">{command.external ? '↗' : '↵'}</span></div> })}</div> : null })}
           {!results.length && <p className="command-empty" role="status">No matching commands.</p>}
         </div>
-        <div className="command-footer">↑ ↓ to navigate <span>↵ to select</span></div>
+        <div className="command-footer"><span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span><span><kbd>↵</kbd> Select</span><span><kbd>Esc</kbd> Close</span></div>
       </div>
     </div>}
   </>

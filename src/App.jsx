@@ -3,6 +3,7 @@ import ContactForm from './ContactForm'
 import Flower from './Flower'
 import Rabbit from './Rabbit'
 import CommandPalette from './CommandPalette'
+import SocialLinks from './SocialLinks'
 import { PROFILE, FEATURED, STACK } from './data'
 
 const RESUME = 'https://drive.google.com/file/d/1ds7-7qcAAioOBJATNsvAwz_Abu-OUVLb/view?usp=drive_link'
@@ -73,21 +74,20 @@ export default function App() {
         <header className="site-header" id="home">
           <a className="brand" href="#home" aria-label="Akib Builds, home">AKIB <span>BUILDS</span><i>.</i></a>
           <nav aria-label="Main navigation"><ul>{navigation.map(([label, href]) => <li key={href}><a href={href}>{label}</a></li>)}</ul></nav>
-          <CommandPalette />
-          <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>{theme === 'dark' ? '☼' : '☾'}</button>
+          <div className="header-utilities"><CommandPalette />
+          <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>{theme === 'dark' ? '☼' : '☾'}</button></div>
         </header>
 
         <main id="main">
           {resumeView ? <section className="resume-view" id="resume"><p className="eyebrow">AKIB BUILDS / RESUME</p><h1>Resume</h1><p>View the current resume in Google Drive.</p><div className="hero-actions"><a className="button button-primary" href={RESUME} target="_blank" rel="noopener noreferrer">Open resume <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a><a className="button button-secondary" href="#home">Back to portfolio</a></div></section> : <>
           <section className="hero" aria-labelledby="hero-title">
             <Flower />
-            <p className="eyebrow hero-reveal">PORTFOLIO <span>/</span> AKIB BUILDS</p>
             <h1 id="hero-title" className="hero-reveal">Akib Shaikh<span className="heading-dot">.</span></h1>
             <p className="hero-role hero-reveal">Full stack developer <span>/</span> Agentic AI</p>
             <p className="hero-copy hero-reveal">I build web apps with the MERN stack and I’m working toward AI agents that act.</p>
             <p className="availability hero-reveal"><span aria-hidden="true" /> Open to internships and open-source work</p>
             <div className="hero-actions hero-reveal"><a className="button button-primary" href="#work" onPointerMove={moveButton} onPointerLeave={resetButton}>View projects <span aria-hidden="true">↗</span></a><a className="button button-secondary" href="#resume" onPointerMove={moveButton} onPointerLeave={resetButton}>View resume <span aria-hidden="true">↗</span></a></div>
-            <div className="social-links hero-social"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div>
+            <SocialLinks />
           </section>
 
           <section id="work" className="section" data-reveal>
@@ -123,13 +123,13 @@ export default function App() {
 
           <section id="contact" className="section contact-section" data-reveal>
             <div className="section-label"><span>03</span><h2>Get in touch</h2></div>
-            <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div><details className="form-wrap"><summary>Send a message</summary><ContactForm /></details></div>
+            <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div><details className="form-wrap"><summary>Send a message <span aria-hidden="true">↗</span></summary><ContactForm /></details></div>
           </section>
           </>}
         </main>
         <section className="footer-quotes" aria-label="Personal quotes">
-          <figure className="quote-block" data-reveal><figcaption className="quote-label">01 <span>—</span> DISCIPLINE</figcaption><blockquote>“Consistency is boring. It's very tough.”</blockquote><p className="quote-author">— Virat Kohli</p></figure>
-          <figure className="quote-block" data-reveal><figcaption className="quote-label">02 <span>—</span> PASSION</figcaption><blockquote>“The only way to do great work is to love what you do.”</blockquote><p className="quote-author">— Steve Jobs</p></figure>
+          <figure className="quote-block" data-reveal><figcaption className="quote-label">01 <span>—</span> VIRAT KOHLI</figcaption><blockquote>“Consistency is boring. It's very tough.”</blockquote></figure>
+          <figure className="quote-block" data-reveal><figcaption className="quote-label">02 <span>—</span> STEVE JOBS</figcaption><blockquote>“The only way to do great work is to love what you do.”</blockquote></figure>
         </section>
         <footer className="site-footer"><span>© {new Date().getFullYear()} Akib Shaikh</span><a href="#home">Back to top ↑</a></footer>
       </div>

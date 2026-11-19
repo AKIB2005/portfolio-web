@@ -15,4 +15,9 @@ export const XIcon = () => (
 export const InstagramIcon = () => (
   <svg {...base}><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
 )
+export const DiscordIcon = () => (
+  <svg {...base}><path d="M7 5.5A17 17 0 0 1 10 4l.4 1.1a13 13 0 0 1 3.2 0L14 4a17 17 0 0 1 3 1.5c2.2 3.1 3.2 6.3 3 9.8a15 15 0 0 1-4 2.1l-1-1.3M7 5.5c-2.2 3.1-3.2 6.3-3 9.8a15 15 0 0 0 4 2.1l1-1.3M8 15.7a10 10 0 0 0 8 0"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/></svg>
+)
+export const GlobeIcon = () => <svg {...base}><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4 6 4 9s-1 6-4 9c-3-3-4-6-4-9s1-6 4-9Z"/></svg>
+export const EmailIcon = () => <svg {...base}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
 export const ICONS = { GitHub: GitHubIcon, LinkedIn: LinkedInIcon, X: XIcon, Instagram: InstagramIcon }
