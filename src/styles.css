@@ -74,3 +74,19 @@ nav a:hover,.project-links a:hover,.social-links a:hover{background-size:100% 1p
 .education-timeline li::before{content:'';position:absolute;left:-24px;top:5px;width:7px;height:7px;border:1px solid var(--muted);border-radius:50%;background:var(--bg);transition:border-color .2s,background-color .2s}
 .education-timeline li:hover::before{border-color:var(--text);background:var(--text)}
 .education-timeline h3{font-size:14px;line-height:1.5;margin:0 0 6px}.education-timeline p{font-size:13px;line-height:1.7;color:var(--muted);margin:0}.education-timeline .education-meta{font-size:12px;margin-top:6px}
+
+/* Compact portfolio layout. */
+.hero{padding:68px 0 64px}.section{padding:42px 0}.projects{gap:10px}.project,.project-featured{padding:20px}.project-topline{margin-bottom:12px}.project p{margin-bottom:10px}.project-points{margin-bottom:13px}.tags{margin-bottom:15px}.project-featured h3{font-size:22px}.profile-tabs{display:flex;gap:20px;border-bottom:1px solid var(--border);margin:24px 0 22px}.profile-tabs button{padding:0 0 10px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}.profile-tabs button[aria-selected=true]{color:var(--text);border-bottom-color:var(--text)}.profile-tabs button:hover{color:var(--text)}[role=tabpanel][hidden]{display:none}.form-wrap{margin-top:22px;padding-top:18px}.form-wrap summary{font-size:13px;font-weight:600;cursor:pointer}.form-wrap[open] summary{margin-bottom:18px}.resume-view{min-height:0;padding:70px 0}
+@media(max-width:600px){.hero{padding:55px 0 50px}.section{padding:34px 0}.project,.project-featured{padding:18px}.profile-tabs{gap:16px}}
+
+/* Compact quotes and restrained interaction polish. */
+.footer-quotes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding:30px 0 36px;border-top:1px solid var(--border)}
+.quote-block{display:flex;flex-direction:column;align-items:flex-start;margin:0;padding:4px 0 4px 16px;border-left:1px solid var(--border);transition:border-color .25s ease}
+.quote-block:hover{border-color:#5fae78}.quote-label{font-size:10px;font-weight:650;letter-spacing:.12em;color:#78bd8e}.quote-label span{color:var(--muted)}
+.quote-block blockquote{margin:14px 0 16px;color:var(--text);font-size:clamp(14px,1.7vw,16px);font-weight:500;line-height:1.6;letter-spacing:-.015em}.quote-author{margin:auto 0 0;color:var(--muted);font-size:12px}
+:root[data-theme=light] .quote-label{color:#326e46}:root[data-theme=light] .quote-block:hover{border-color:#397d4d}
+.project-arrow{transition:transform .2s ease,color .2s ease}.project:hover .project-arrow,.project:focus-within .project-arrow{transform:translate(3px,-3px);color:var(--text)}
+nav a:focus-visible{background-size:100% 1px}.profile-tabs button{transition:color .2s,border-color .2s}.button:focus-visible{border-color:var(--focus)}
+@media(prefers-reduced-motion:no-preference){.quote-block.revealed{animation:arrive .6s both}.quote-block:nth-child(2).revealed{animation-delay:.12s}[role=tabpanel]:not([hidden]){animation:panel-in .2s ease both}@keyframes panel-in{from{opacity:.75;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}}
+@media(max-width:600px){.footer-quotes{grid-template-columns:1fr;gap:22px;padding:28px 0}.quote-block blockquote{margin:10px 0 12px}}
+@media(prefers-reduced-motion:reduce){.quote-block,.project-arrow,.profile-tabs button{transition:none}.project:hover .project-arrow,.project:focus-within .project-arrow{transform:none}}

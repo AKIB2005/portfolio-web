@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { FEATURED, PROFILE } from './data'
 
 const commands = [
-  ...[['Home', '#home'], ['Work', '#work'], ['About', '#about'], ['Skills', '#skills'], ['Contact', '#contact'], ['Resume', '#resume']].map(([label, href]) => ({ label, href, group: 'Navigation' })),
+  ...[['Home', '#home'], ['Work', '#work'], ['Profile', '#profile'], ['About', '#about'], ['Education', '#education'], ['Achievements', '#achievements'], ['Skills', '#skills'], ['Contact', '#contact'], ['Resume', '#resume']].map(([label, href]) => ({ label, href, group: 'Navigation' })),
   ...FEATURED.map(project => ({ label: project.title, href: `#project-${project.title.toLowerCase()}`, group: 'Projects' })),
   ...[['GitHub', PROFILE.github], ['LinkedIn', PROFILE.linkedin]].map(([label, href]) => ({ label, href, group: 'External links', external: true })),
 ]
@@ -32,7 +32,7 @@ export default function CommandPalette() {
     if (!command) return
     close()
     if (command.external) window.open(command.href, '_blank', 'noopener,noreferrer')
-    else { window.location.hash = command.href; if (window.location.hash === command.href) document.getElementById(command.href.slice(1))?.scrollIntoView() }
+    else { if (window.location.hash === command.href) window.dispatchEvent(new HashChangeEvent('hashchange')); else window.location.hash = command.href; requestAnimationFrame(() => document.getElementById(command.href.slice(1))?.scrollIntoView()) }
   }
   const onKeyDown = event => {
     if (event.key === 'Escape') { event.preventDefault(); close(); return }

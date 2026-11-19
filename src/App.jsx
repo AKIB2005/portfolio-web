@@ -6,7 +6,7 @@ import CommandPalette from './CommandPalette'
 import { PROFILE, FEATURED, STACK } from './data'
 
 const RESUME = 'https://drive.google.com/file/d/1ds7-7qcAAioOBJATNsvAwz_Abu-OUVLb/view?usp=drive_link'
-const navigation = [['Home', '#home'], ['Work', '#work'], ['About', '#about'], ['Skills', '#skills'], ['Resume', '#resume'], ['Contact', '#contact']]
+const navigation = [['Home', '#home'], ['Work', '#work'], ['Profile', '#profile'], ['Resume', '#resume'], ['Contact', '#contact']]
 
 function ExternalLink({ href, children }) {
   return <a href={href} target="_blank" rel="noopener noreferrer">{children}<span aria-hidden="true"> ↗</span><span className="sr-only"> (opens in a new tab)</span></a>
@@ -35,8 +35,10 @@ function Project({ project, index }) {
 export default function App() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'dark')
   const [resumeView, setResumeView] = useState(() => location.hash === '#resume')
+  const tabs = ['education', 'achievements', 'skills']
+  const [profileTab, setProfileTab] = useState(() => tabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'education')
   useEffect(() => {
-    const update = () => setResumeView(location.hash === '#resume')
+    const update = () => { const hash = location.hash.slice(1); setResumeView(hash === 'resume'); if (tabs.includes(hash)) setProfileTab(hash) }
     addEventListener('hashchange', update)
     return () => removeEventListener('hashchange', update)
   }, [])
@@ -84,33 +86,24 @@ export default function App() {
             <div className="social-links hero-social"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div>
           </section>
 
-          <section id="about" className="section" data-reveal>
-            <div className="section-label"><span>01</span><h2>Summary</h2></div>
-            <div className="section-content"><p className="summary">I started with the web and kept going deeper: React on the front, Node, Express and MongoDB behind it. I practise DSA so the code I write holds up, and I’m learning to build agents that act.</p></div>
-          </section>
-
           <section id="work" className="section" data-reveal>
-            <div className="section-label"><span>02</span><h2>Featured projects</h2></div>
+            <div className="section-label"><span>01</span><h2>Selected work</h2></div>
             <div className="section-content"><p className="section-intro">A selection of things I’ve built and explored.</p><div className="projects">{FEATURED.map((project, index) => <Project key={project.title} project={project} index={index} />)}</div></div>
           </section>
 
-          <section id="skills" className="section" data-reveal>
-            <div className="section-label"><span>03</span><h2>Skills</h2></div>
-            <div className="section-content"><p className="section-intro">Technologies I work with and explore.</p><div className="skill-groups">{STACK.map(([group, items]) => <div className="skill-group" key={group}><h3>{group}</h3><p>{items.join(' · ')}</p></div>)}</div></div>
-          </section>
-
-          <section id="education" className="section" data-reveal>
-            <div className="section-label"><span>04</span><h2>Education</h2></div>
-            <div className="section-content"><ol className="education-timeline">
+          <section id="profile" className="section" data-reveal>
+            <div className="section-label"><span>02</span><h2>Profile</h2></div>
+            <div className="section-content"><p id="about" className="summary">I started with the web and kept going deeper: React on the front, Node, Express and MongoDB behind it. I practise DSA so the code I write holds up, and I’m learning to build agents that act.</p>
+            <div className="profile-tabs" role="tablist" aria-label="Profile information" onKeyDown={event => { const current = tabs.indexOf(profileTab); let next; if (event.key === 'ArrowRight') next = (current + 1) % tabs.length; else if (event.key === 'ArrowLeft') next = (current + tabs.length - 1) % tabs.length; else if (event.key === 'Home') next = 0; else if (event.key === 'End') next = tabs.length - 1; else return; event.preventDefault(); setProfileTab(tabs[next]); document.getElementById(`tab-${tabs[next]}`).focus() }}>
+              {tabs.map(tab => <button key={tab} id={`tab-${tab}`} type="button" role="tab" aria-selected={profileTab === tab} aria-controls={tab} tabIndex={profileTab === tab ? 0 : -1} onClick={() => setProfileTab(tab)}>{tab[0].toUpperCase() + tab.slice(1)}</button>)}
+            </div>
+            <div id="education" role="tabpanel" aria-labelledby="tab-education" tabIndex="0" hidden={profileTab !== 'education'}><ol className="education-timeline">
               <li><h3>N. K. Orchid College of Engineering &amp; Technology, Solapur</h3><p>Bachelor of Technology (B.Tech) in Computer Science and Engineering</p><p className="education-meta">2024–2028 (Expected) · Current CGPA: 8.85/10</p></li>
               <li><h3>V.V.P. Junior College, Soregaon</h3><p>Higher Secondary Education (Class XII)</p><p className="education-meta">Completed 2024 · 80%</p></li>
               <li><h3>Indian Model School, Solapur</h3><p>Secondary Education (Class X), CBSE</p><p className="education-meta">Completed 2022 · 85%</p></li>
             </ol></div>
-          </section>
 
-          <section id="achievements" className="section" data-reveal>
-            <div className="section-label"><span>05</span><h2>Achievements &amp; Open Source</h2></div>
-            <div className="section-content achievement-list">
+            <div id="achievements" className="achievement-list" role="tabpanel" aria-labelledby="tab-achievements" tabIndex="0" hidden={profileTab !== 'achievements'}>
               <article className="achievement achievement-featured">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4" /></svg>
                 <div><h3>KURUKSHETRA 2.0</h3><p className="achievement-subtitle">24-Hour Hackathon — Runner-Up</p><p className="achievement-meta">Fabtech Technical Campus, College of Engineering &amp; Research<br />Sangola, Maharashtra · October 30–31, 2026</p><div className="achievement-result"><span>2nd Place</span><span>₹10,000 <small>cash prize</small></span></div></div>
@@ -120,14 +113,20 @@ export default function App() {
                 <div><h3>GirlScript Summer of Code (GSSoC) 2026</h3><p className="achievement-meta">Open Source Contributor · May–August 2026</p><p>Contributed to multiple open-source repositories.</p></div>
               </article>
             </div>
+            <div id="skills" role="tabpanel" aria-labelledby="tab-skills" tabIndex="0" hidden={profileTab !== 'skills'}><p className="section-intro">Technologies I work with and explore.</p><div className="skill-groups">{STACK.map(([group, items]) => <div className="skill-group" key={group}><h3>{group}</h3><p>{items.join(' · ')}</p></div>)}</div></div>
+            </div>
           </section>
 
           <section id="contact" className="section contact-section" data-reveal>
-            <div className="section-label"><span>06</span><h2>Get in touch</h2></div>
-            <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div><div className="form-wrap"><h3>Send a message</h3><ContactForm /></div></div>
+            <div className="section-label"><span>03</span><h2>Get in touch</h2></div>
+            <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div><details className="form-wrap"><summary>Send a message</summary><ContactForm /></details></div>
           </section>
           </>}
         </main>
+        <section className="footer-quotes" aria-label="Personal quotes">
+          <figure className="quote-block" data-reveal><figcaption className="quote-label">01 <span>—</span> DISCIPLINE</figcaption><blockquote>“Consistency is boring. It's very tough.”</blockquote><p className="quote-author">— Virat Kohli</p></figure>
+          <figure className="quote-block" data-reveal><figcaption className="quote-label">02 <span>—</span> PASSION</figcaption><blockquote>“The only way to do great work is to love what you do.”</blockquote><p className="quote-author">— Steve Jobs</p></figure>
+        </section>
         <footer className="site-footer"><span>© {new Date().getFullYear()} Akib Shaikh</span><a href="#home">Back to top ↑</a></footer>
       </div>
     </>
