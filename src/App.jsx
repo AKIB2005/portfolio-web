@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import ContactForm from './ContactForm'
 import Flower from './Flower'
-import Companion from './Companion'
 import CommandPalette from './CommandPalette'
 import SocialLinks from './SocialLinks'
 import { PROFILE, FEATURED, STACK } from './data'
@@ -69,7 +68,6 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <Companion />
       <div className="shell">
         <header className="site-header" id="home">
           <a className="brand" href="#home" aria-label="Akib Builds, home">AKIB <span>BUILDS</span><i>.</i></a>
