@@ -16,10 +16,20 @@ export const FACTS = [
 
 export const FEATURED = [
   {
+    title: 'ORBIT',
+    status: 'Spatial productivity',
+    text: 'A spatial productivity app that visualizes projects as planets and tasks as orbiting satellites.',
+    points: ['Explore work in an interactive 3D universe', 'Organize tasks and milestones with local-first storage'],
+    technologies: ['React', 'TypeScript', 'Three.js', 'IndexedDB'],
+    live: 'https://orbit-omega-sepia.vercel.app/',
+    source: 'https://github.com/AKIB2005/orbit',
+  },
+  {
     title: 'Grantly',
     status: 'Frontend hackathon',
     text: 'Finds scholarships you actually qualify for, explains why each one is a match, and keeps every deadline in one place. Built solo in six hours for THE OUTPOST by Frontend Arena.',
     points: ['Personalised scholarship matching', 'Clear eligibility for every match', 'Simple deadline tracker'],
+    technologies: ['React', 'TypeScript'],
     live: 'https://frontend-arena-one.vercel.app/profile',
     source: 'https://github.com/AKIB2005/frontend-arena',
     kind: 'grants',
@@ -29,6 +39,7 @@ export const FEATURED = [
     status: 'AI / ML project',
     text: 'An email spam detector. Paste an email and HAMMER scores it with a machine-learning model, then shows which words pushed the result toward spam or toward legitimate.',
     points: ['Runs entirely in your browser, nothing is sent anywhere', 'Shows the words behind each score', 'Trained in Python (scikit-learn), scored in JavaScript with TF-IDF'],
+    technologies: ['Python', 'scikit-learn', 'JavaScript', 'TF-IDF'],
     live: 'https://email-spam-detector-tp2v.vercel.app/',
     source: 'https://github.com/AKIB2005/email-spam-detector',
     kind: 'spam',
