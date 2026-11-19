@@ -40,7 +40,6 @@ export default function App() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'dark')
   const [resumeView, setResumeView] = useState(() => location.hash === '#resume')
   const [activeProject, setActiveProject] = useState(() => FEATURED.find(p => location.hash === `#project-${p.title.toLowerCase()}`)?.title || FEATURED[0].title)
-  const [projectHover, setProjectHover] = useState(false)
   const tabs = ['education', 'achievements', 'skills']
   const [profileTab, setProfileTab] = useState(() => tabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'education')
   useEffect(() => {
@@ -70,7 +69,7 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <Companion activeProject={activeProject} projectHover={projectHover} />
+      <Companion />
       <div className="shell">
         <header className="site-header" id="home">
           <a className="brand" href="#home" aria-label="Akib Builds, home">AKIB <span>BUILDS</span><i>.</i></a>
@@ -93,7 +92,7 @@ export default function App() {
 
           <section id="work" className="section" data-reveal>
             <div className="section-label"><span>01</span><h2>Selected work</h2></div>
-            <div className="section-content"><p className="section-intro">A selection of things I’ve built and explored.</p><div className="projects" onPointerEnter={() => setProjectHover(true)} onPointerLeave={() => setProjectHover(false)}>{FEATURED.map((project, index) => <Project key={project.title} project={project} index={index} expanded={activeProject === project.title} onSelect={() => setActiveProject(project.title)} />)}</div></div>
+            <div className="section-content"><p className="section-intro">A selection of things I’ve built and explored.</p><div className="projects">{FEATURED.map((project, index) => <Project key={project.title} project={project} index={index} expanded={activeProject === project.title} onSelect={() => setActiveProject(project.title)} />)}</div></div>
           </section>
 
           <section id="profile" className="section" data-reveal>
