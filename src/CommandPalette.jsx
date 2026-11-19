@@ -19,7 +19,7 @@ export default function CommandPalette() {
   const closeTimer = useRef(null)
   const results = commands.filter(command => `${command.label} ${command.group} ${command.keywords || ''}`.toLowerCase().includes(query.trim().toLowerCase()))
   const show = () => { clearTimeout(closeTimer.current); previous.current = document.activeElement; setQuery(''); setActive(0); setClosing(false); setOpen(true) }
-  const close = (restore = true) => { if (closing) return; setClosing(true); const delay = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 120; closeTimer.current = setTimeout(() => { setOpen(false); setClosing(false); if (restore) previous.current?.focus({ preventScroll: true }) }, delay) }
+  const close = (restore = true) => { if (closing) return; setClosing(true); const delay = document.documentElement.dataset.motion !== 'full' ? 0 : 120; closeTimer.current = setTimeout(() => { setOpen(false); setClosing(false); if (restore) previous.current?.focus({ preventScroll: true }) }, delay) }
   useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   useEffect(() => {

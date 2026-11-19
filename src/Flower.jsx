@@ -16,7 +16,7 @@ export default function Flower() {
   useEffect(() => {
     const element = root.current, ctx = canvas.current.getContext('2d')
     if (!ctx) return undefined
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)')
+    const reduced = () => document.documentElement.dataset.motion !== 'full'
     const fine = matchMedia('(hover: hover) and (pointer: fine)')
     const state = BRANCHES.map(() => ({ bend: 0, velocity: 0, tip: 0, tipVelocity: 0, gust: 0 }))
     let width = 0, height = 0, scale = 1, rect, frame = 0, previous = 0, time = 0, visible = false
@@ -32,7 +32,7 @@ export default function Flower() {
     }
     const point = ([x, y]) => [x * scale, y * scale]
     const move = event => {
-      if (!visible || reduced.matches || !fine.matches) return
+      if (!visible || reduced() || !fine.matches) return
       rect = element.getBoundingClientRect()
       const x = event.clientX - rect.left, y = event.clientY - rect.top, now = performance.now()
       const dt = Math.max(16, now - pointerTime)
@@ -96,21 +96,21 @@ export default function Flower() {
     }
     const tick = now => {
       frame = 0
-      if (!visible || document.hidden || reduced.matches) return
+      if (!visible || document.hidden || reduced()) return
       const dt = previous ? Math.min((now - previous) / 1000, .05) : 0
       previous = now; time += dt; simulate(dt); render(false); frame = requestAnimationFrame(tick)
     }
     const sync = () => {
-      if (!visible || document.hidden || reduced.matches) { cancelAnimationFrame(frame); frame = 0; previous = 0; if (reduced.matches) render(true) }
+      if (!visible || document.hidden || reduced()) { cancelAnimationFrame(frame); frame = 0; previous = 0; if (reduced()) render(true) }
       else if (!frame) frame = requestAnimationFrame(tick)
     }
     const observer = 'IntersectionObserver' in window ? new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync() }) : null
     if (observer) observer.observe(element); else visible = true
     const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(element)
-    const themeObserver = new MutationObserver(() => { if (reduced.matches) render(true) }); themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    const themeObserver = new MutationObserver(() => { sync(); if (reduced()) render(true) }); themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-motion'] })
     resize(); sync()
-    window.addEventListener('pointermove', move, { passive: true }); document.addEventListener('visibilitychange', sync); reduced.addEventListener('change', sync)
-    return () => { observer?.disconnect(); resizeObserver.disconnect(); themeObserver.disconnect(); cancelAnimationFrame(frame); window.removeEventListener('pointermove', move); document.removeEventListener('visibilitychange', sync); reduced.removeEventListener('change', sync) }
+    window.addEventListener('pointermove', move, { passive: true }); document.addEventListener('visibilitychange', sync)
+    return () => { observer?.disconnect(); resizeObserver.disconnect(); themeObserver.disconnect(); cancelAnimationFrame(frame); window.removeEventListener('pointermove', move); document.removeEventListener('visibilitychange', sync) }
   }, [])
   return <div className="flower" ref={root} aria-hidden="true"><canvas ref={canvas} /></div>
 }

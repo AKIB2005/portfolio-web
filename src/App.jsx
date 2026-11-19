@@ -3,9 +3,10 @@ import ContactForm from './ContactForm'
 import Flower from './Flower'
 import CommandPalette from './CommandPalette'
 import SocialLinks from './SocialLinks'
+import MotionControl from './MotionControl'
+import ResumeView from './ResumeView'
 import { PROFILE, FEATURED, STACK } from './data'
 
-const RESUME = 'https://drive.google.com/file/d/1ds7-7qcAAioOBJATNsvAwz_Abu-OUVLb/view?usp=drive_link'
 const navigation = [['Home', '#home'], ['Work', '#work'], ['Profile', '#profile'], ['Resume', '#resume'], ['Contact', '#contact']]
 
 function ExternalLink({ href, children }) {
@@ -13,7 +14,7 @@ function ExternalLink({ href, children }) {
 }
 
 function moveButton(event) {
-  if (!matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches || document.documentElement.dataset.motion !== 'full') return
   const rect = event.currentTarget.getBoundingClientRect()
   event.currentTarget.style.transform = `translate(${(event.clientX - rect.left - rect.width / 2) * 0.05}px, ${(event.clientY - rect.top - rect.height / 2) * 0.05}px)`
 }
@@ -56,7 +57,7 @@ export default function App() {
     return next
   })
   useEffect(() => {
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    if (!('IntersectionObserver' in window)) return undefined
     const elements = document.querySelectorAll('[data-reveal]')
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target) }
@@ -72,19 +73,19 @@ export default function App() {
         <header className="site-header" id="home">
           <a className="brand" href="#home" aria-label="Akib Builds, home">AKIB <span>BUILDS</span><i>.</i></a>
           <nav aria-label="Main navigation"><ul>{navigation.map(([label, href]) => <li key={href}><a href={href}>{label}</a></li>)}</ul></nav>
-          <div className="header-utilities"><CommandPalette />
+          <div className="header-utilities"><CommandPalette /><MotionControl />
           <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>{theme === 'dark' ? '☼' : '☾'}</button></div>
         </header>
 
         <main id="main">
-          {resumeView ? <section className="resume-view" id="resume"><p className="eyebrow">AKIB BUILDS / RESUME</p><h1>Resume</h1><p>View the current resume in Google Drive.</p><div className="hero-actions"><a className="button button-primary" href={RESUME} target="_blank" rel="noopener noreferrer">Open resume <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a><a className="button button-secondary" href="#home">Back to portfolio</a></div></section> : <>
+          {resumeView ? <ResumeView /> : <>
           <section className="hero" aria-labelledby="hero-title">
             <Flower />
             <h1 id="hero-title" className="hero-reveal">Akib Shaikh<span className="heading-dot">.</span></h1>
             <p className="hero-role hero-reveal">Full stack developer <span>/</span> Agentic AI</p>
             <p className="hero-copy hero-reveal">I build web apps with the MERN stack and I’m working toward AI agents that act.</p>
             <p className="availability hero-reveal"><span aria-hidden="true" /> Open to internships and open-source work</p>
-            <div className="hero-actions hero-reveal"><a className="button button-primary" href="#work" onPointerMove={moveButton} onPointerLeave={resetButton}>View projects <span aria-hidden="true">↗</span></a><a className="button button-secondary" href="#resume" onPointerMove={moveButton} onPointerLeave={resetButton}>View resume <span aria-hidden="true">↗</span></a></div>
+            <div className="hero-actions hero-reveal"><a className="button button-primary" href="#work" onPointerMove={moveButton} onPointerLeave={resetButton}>View projects <span aria-hidden="true">↗</span></a><a className="button button-secondary" href="#resume" onPointerMove={moveButton} onPointerLeave={resetButton}>Preview resume <span aria-hidden="true">↗</span></a></div>
             <SocialLinks />
           </section>
 
