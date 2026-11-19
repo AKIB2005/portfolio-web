@@ -19,15 +19,18 @@ function moveButton(event) {
 }
 function resetButton(event) { event.currentTarget.style.transform = '' }
 
-function Project({ project, index }) {
+function Project({ project, index, expanded, onSelect }) {
+  const id = `project-${project.title.toLowerCase()}`
   return (
-    <article id={`project-${project.title.toLowerCase()}`} className={`project${index === 0 ? ' project-featured' : ''}`}>
-      <div className="project-topline"><span>{index === 0 ? 'Featured project' : project.status}</span><span>0{index + 1}</span></div>
-      <div className="project-heading"><h3>{project.title}</h3><span className="project-arrow" aria-hidden="true">↗</span></div>
+    <article id={id} className={`project project-accordion${expanded ? ' is-expanded' : ''}${index === 0 ? ' project-featured' : ''}`}>
+      <h3 className="project-accordion-heading"><button type="button" className="project-toggle" aria-expanded={expanded} aria-controls={`${id}-details`} onClick={onSelect}><span className="project-number">0{index + 1}</span><span className="project-name">{project.title}</span><span className="project-toggle-icon" aria-hidden="true">{expanded ? '−' : '+'}</span></button></h3>
+      <div className="project-details" id={`${id}-details`} hidden={!expanded}>
+      <div className="project-topline"><span>{index === 0 ? 'Featured project' : project.status}</span></div>
       <p>{project.text}</p>
       <ul className="project-points">{project.points.map(point => <li key={point}>{point}</li>)}</ul>
       <ul className="tags" aria-label={`${project.title} technologies`}>{project.technologies.map(tech => <li key={tech}>{tech}</li>)}</ul>
       <div className="project-links"><ExternalLink href={project.source}>GitHub</ExternalLink>{project.live && <ExternalLink href={project.live}>Live demo</ExternalLink>}</div>
+      </div>
     </article>
   )
 }
@@ -35,10 +38,11 @@ function Project({ project, index }) {
 export default function App() {
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || 'dark')
   const [resumeView, setResumeView] = useState(() => location.hash === '#resume')
+  const [activeProject, setActiveProject] = useState(() => FEATURED.find(p => location.hash === `#project-${p.title.toLowerCase()}`)?.title || FEATURED[0].title)
   const tabs = ['education', 'achievements', 'skills']
   const [profileTab, setProfileTab] = useState(() => tabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'education')
   useEffect(() => {
-    const update = () => { const hash = location.hash.slice(1); setResumeView(hash === 'resume'); if (tabs.includes(hash)) setProfileTab(hash) }
+    const update = () => { const hash = location.hash.slice(1); setResumeView(hash === 'resume'); if (tabs.includes(hash)) setProfileTab(hash); const project = FEATURED.find(p => hash === `project-${p.title.toLowerCase()}`); if (project) setActiveProject(project.title) }
     addEventListener('hashchange', update)
     return () => removeEventListener('hashchange', update)
   }, [])
@@ -88,7 +92,7 @@ export default function App() {
 
           <section id="work" className="section" data-reveal>
             <div className="section-label"><span>01</span><h2>Selected work</h2></div>
-            <div className="section-content"><p className="section-intro">A selection of things I’ve built and explored.</p><div className="projects">{FEATURED.map((project, index) => <Project key={project.title} project={project} index={index} />)}</div></div>
+            <div className="section-content"><p className="section-intro">A selection of things I’ve built and explored.</p><div className="projects">{FEATURED.map((project, index) => <Project key={project.title} project={project} index={index} expanded={activeProject === project.title} onSelect={() => setActiveProject(project.title)} />)}</div></div>
           </section>
 
           <section id="profile" className="section" data-reveal>
@@ -98,7 +102,7 @@ export default function App() {
               {tabs.map(tab => <button key={tab} id={`tab-${tab}`} type="button" role="tab" aria-selected={profileTab === tab} aria-controls={tab} tabIndex={profileTab === tab ? 0 : -1} onClick={() => setProfileTab(tab)}>{tab[0].toUpperCase() + tab.slice(1)}</button>)}
             </div>
             <div id="education" role="tabpanel" aria-labelledby="tab-education" tabIndex="0" hidden={profileTab !== 'education'}><ol className="education-timeline">
-              <li><h3>N. K. Orchid College of Engineering &amp; Technology, Solapur</h3><p>Bachelor of Technology (B.Tech) in Computer Science and Engineering</p><p className="education-meta">2024–2028 (Expected) · Current CGPA: 8.85/10</p></li>
+              <li><h3>N. K. Orchid College of Engineering &amp; Technology, Solapur</h3><p className="education-degree">Bachelor of Technology (B.Tech) in Computer Science and Engineering</p><p className="education-meta">2024–2028 (Expected) · <strong>Current CGPA: 8.85/10</strong></p></li>
               <li><h3>V.V.P. Junior College, Soregaon</h3><p>Higher Secondary Education (Class XII)</p><p className="education-meta">Completed 2024 · 80%</p></li>
               <li><h3>Indian Model School, Solapur</h3><p>Secondary Education (Class X), CBSE</p><p className="education-meta">Completed 2022 · 85%</p></li>
             </ol></div>
