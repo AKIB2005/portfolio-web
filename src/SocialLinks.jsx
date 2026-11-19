@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { PROFILE } from './data'
-import { GitHubIcon, LinkedInIcon, XIcon, InstagramIcon, DiscordIcon, GlobeIcon, EmailIcon } from './Icons'
+import { GitHubIcon, LinkedInIcon, LeetCodeIcon, XIcon, InstagramIcon, DiscordIcon, GlobeIcon, EmailIcon } from './Icons'
 
 export const DISCORD_USERNAME = 'akib2885'
 export const SOCIALS = [
   { label: 'GitHub', href: PROFILE.github, Icon: GitHubIcon, external: true },
   { label: 'LinkedIn', href: PROFILE.linkedin, Icon: LinkedInIcon, external: true },
+  { label: 'LeetCode', href: PROFILE.leetcode, Icon: LeetCodeIcon, external: true },
   { label: 'X', href: PROFILE.x, Icon: XIcon, external: true },
   { label: 'Instagram', href: PROFILE.instagram, Icon: InstagramIcon, external: true },
   { label: 'Discord', action: 'copy-discord', Icon: DiscordIcon },

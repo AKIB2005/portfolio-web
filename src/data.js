@@ -4,6 +4,7 @@ export const PROFILE = {
   email: 'akibshaikh2005@gmail.com',
   github: 'https://github.com/AKIB2005',
   linkedin: 'https://www.linkedin.com/in/akibshaikh2005',
+  leetcode: 'https://leetcode.com/u/AkibOnTheStack/',
   x: 'https://x.com/akibshaikh2005',
   instagram: 'https://www.instagram.com/akibshaikh2005',
 }

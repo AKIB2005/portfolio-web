@@ -122,7 +122,7 @@ export default function App() {
 
           <section id="contact" className="section contact-section" data-reveal>
             <div className="section-label"><span>03</span><h2>Get in touch</h2></div>
-            <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div><details className="form-wrap"><summary>Send a message <span aria-hidden="true">↗</span></summary><ContactForm /></details></div>
+            <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink><ExternalLink href={PROFILE.leetcode}>LeetCode</ExternalLink></div><details className="form-wrap"><summary>Send a message <span aria-hidden="true">↗</span></summary><ContactForm /></details></div>
           </section>
           </>}
         </main>
