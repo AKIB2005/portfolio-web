@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 const PDF = '/resume.pdf'
-const DRIVE = 'https://drive.google.com/file/d/1ds7-7qcAAioOBJATNsvAwz_Abu-OUVLb/view?usp=drive_link'
 
 export default function ResumeView() {
   const [status, setStatus] = useState('loading')
@@ -24,14 +23,21 @@ export default function ResumeView() {
     return () => controller.abort()
   }, [])
 
-  return <section className="resume-view" id="resume">
-    <p className="eyebrow">AKIB BUILDS / RESUME</p><h1>Resume</h1>
-    {status === 'loading' && <p role="status">Checking resume availability…</p>}
-    {status === 'ready' && <>
-      <div className="hero-actions resume-actions"><a className="button button-primary" href={PDF} download="Akib_Shaikh_Resume.pdf">Download Resume</a><a className="button button-secondary" href={PDF} target="_blank" rel="noopener noreferrer">Open PDF <span className="sr-only">(opens in a new tab)</span></a><a className="button button-secondary" href="#home">Back to portfolio</a></div>
-      <object className="resume-document" data={PDF} type="application/pdf" aria-label="Resume PDF preview"><p>Your browser cannot display the PDF here. <a href={PDF} target="_blank" rel="noopener noreferrer">Open the resume in a new tab</a> or use Download Resume above.</p></object>
-      <p className="resume-fallback">Can't see the preview? <a href={PDF} target="_blank" rel="noopener noreferrer">Open the PDF in a new tab</a>.</p>
-    </>}
-    {status === 'missing' && <><p>The on-site PDF is not available yet. The existing resume is available on Google Drive.</p><div className="hero-actions"><a className="button button-primary" href={DRIVE} target="_blank" rel="noopener noreferrer">Open existing resume <span className="sr-only">(opens in a new tab)</span></a><a className="button button-secondary" href="#home">Back to portfolio</a></div></>}
+  return <section className="resume-view" id="resume" aria-labelledby="resume-title">
+    <a className="resume-back" href="#home"><span aria-hidden="true">←</span> Back to portfolio</a>
+    <header className="resume-header">
+      <div className="resume-heading"><p className="eyebrow">AKIB BUILDS / DOCUMENT</p><h1 id="resume-title">Resume</h1><p>Akib Shaikh <span aria-hidden="true">·</span> <span className="resume-file-type">PDF</span></p></div>
+      {status === 'ready' && <div className="resume-actions">
+        <a className="button button-secondary" href={PDF} target="_blank" rel="noopener noreferrer">Open in New Tab <span className="resume-action-icon" aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span></a>
+        <a className="button button-primary" href={PDF} download="Akib_Shaikh_Resume.pdf">Download Resume <span className="resume-action-icon" aria-hidden="true">↓</span></a>
+      </div>}
+    </header>
+    <div className="resume-workspace">
+      <div className="resume-workspace-label"><span>DOCUMENT PREVIEW</span><span>PDF</span></div>
+      {status === 'loading' && <p className="resume-state" role="status">Preparing document preview…</p>}
+      {status === 'missing' && <p className="resume-state" role="alert">The resume PDF is currently unavailable. Please try again later.</p>}
+      {status === 'ready' && <object className="resume-document" data={PDF} type="application/pdf" aria-label="Akib Shaikh’s resume PDF preview"><p>Your browser cannot display the PDF here. <a href={PDF} target="_blank" rel="noopener noreferrer">Open the resume in a new tab</a> or use Download Resume above.</p></object>}
+    </div>
+    {status === 'ready' && <p className="resume-fallback">Having trouble viewing the document? <a href={PDF} target="_blank" rel="noopener noreferrer">Open the PDF in a new tab</a>.</p>}
   </section>
 }

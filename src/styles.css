@@ -177,3 +177,27 @@ nav a:focus-visible{background-size:100% 1px}.profile-tabs button{transition:col
 .cform-error{font-size:12px;color:#d44848}.cform input[aria-invalid=true],.cform textarea[aria-invalid=true]{border-color:#d44848}.cform input:focus-visible,.cform textarea:focus-visible{outline:2px solid var(--focus);outline-offset:2px}.cform input,.cform textarea{transition:border-color .18s,box-shadow .18s}.cform .btn:not(:disabled):hover{transform:translateY(-1px)}
 html[data-motion=reduced],html[data-motion=off]{scroll-behavior:auto}html[data-motion=reduced] *,html[data-motion=reduced] *::before,html[data-motion=reduced] *::after,html[data-motion=off] *,html[data-motion=off] *::before,html[data-motion=off] *::after{animation:none!important;scroll-behavior:auto!important}html[data-motion=reduced] *,html[data-motion=reduced] *::before,html[data-motion=reduced] *::after{transition-duration:.1s!important}html[data-motion=off] *,html[data-motion=off] *::before,html[data-motion=off] *::after{transition:none!important}html[data-motion=reduced] .project-details:not([hidden]),html[data-motion=off] .project-details:not([hidden]){visibility:visible;opacity:1;transform:none}html:not([data-motion=full]) .site-header nav a:hover,html:not([data-motion=full]) .project.project-accordion:hover,html:not([data-motion=full]) .hero-social .social-icon:hover,html:not([data-motion=full]) .button:hover,html:not([data-motion=full]) .cform .btn:hover,html:not([data-motion=full]) .quote-block:hover{transform:none!important}
 @media(max-width:700px){.resume-document{height:60vh;min-height:320px}.resume-actions .button{min-height:44px}}
+
+/* Resume document workspace */
+.resume-view{padding:52px 0 70px;animation:resume-enter .2s ease both}
+.resume-back{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;font-weight:600;transition:color .18s ease}
+.resume-back:hover{color:var(--text)}
+.resume-back span,.resume-action-icon{display:inline-block;transition:transform .18s ease}
+.resume-back:hover span{transform:translateX(-3px)}
+.resume-header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:28px 0 24px}
+.resume-heading .eyebrow{margin:0 0 9px}
+.resume-heading h1{margin:0;font-size:clamp(28px,4vw,36px);line-height:1.1;letter-spacing:-.04em}
+.resume-heading>p:last-child{display:flex;align-items:center;gap:8px;margin:10px 0 0;color:var(--muted);font-size:13px}
+.resume-file-type{font-size:10px;font-weight:700;letter-spacing:.08em}
+.resume-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0}
+.resume-actions .button{gap:10px;min-height:40px;padding:0 13px;font-size:12px}
+.resume-actions .button:hover .resume-action-icon{transform:translate(2px,-2px)}
+.resume-workspace{padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--tag)}
+.resume-workspace-label{display:flex;justify-content:space-between;gap:12px;padding:0 2px 12px;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.1em}
+.resume-document{width:100%;height:min(100vh,1000px);min-height:500px;border:1px solid var(--border);border-radius:5px;background:var(--surface)}
+.resume-state{display:grid;place-items:center;min-height:220px;margin:0;padding:24px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--muted);font-size:13px;text-align:center}
+.resume-view .resume-fallback{margin:14px 0 0;color:var(--muted);font-size:12px}
+.resume-fallback a{color:var(--text)}
+@keyframes resume-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.resume-view{padding:36px 0 52px}.resume-header{align-items:flex-start;margin:24px 0 20px}.resume-workspace{padding:10px}.resume-document{height:65vh;min-height:360px}.resume-actions .button{min-height:44px}}
+html:not([data-motion=full]) .resume-back:hover span,html:not([data-motion=full]) .resume-actions .button:hover .resume-action-icon{transform:none}
