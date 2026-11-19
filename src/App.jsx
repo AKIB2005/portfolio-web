@@ -99,22 +99,31 @@ export default function App() {
             <div className="section-content"><p className="section-intro">Technologies I work with and explore.</p><div className="skill-groups">{STACK.map(([group, items]) => <div className="skill-group" key={group}><h3>{group}</h3><p>{items.join(' · ')}</p></div>)}</div></div>
           </section>
 
+          <section id="education" className="section" data-reveal>
+            <div className="section-label"><span>04</span><h2>Education</h2></div>
+            <div className="section-content"><ol className="education-timeline">
+              <li><h3>N. K. Orchid College of Engineering &amp; Technology, Solapur</h3><p>Bachelor of Technology (B.Tech) in Computer Science and Engineering</p><p className="education-meta">2024–2028 (Expected) · Current CGPA: 8.85/10</p></li>
+              <li><h3>V.V.P. Junior College, Soregaon</h3><p>Higher Secondary Education (Class XII)</p><p className="education-meta">Completed 2024 · 80%</p></li>
+              <li><h3>Indian Model School, Solapur</h3><p>Secondary Education (Class X), CBSE</p><p className="education-meta">Completed 2022 · 85%</p></li>
+            </ol></div>
+          </section>
+
           <section id="achievements" className="section" data-reveal>
-            <div className="section-label"><span>04</span><h2>Achievements &amp; Open Source</h2></div>
+            <div className="section-label"><span>05</span><h2>Achievements &amp; Open Source</h2></div>
             <div className="section-content achievement-list">
-              <article className="achievement">
+              <article className="achievement achievement-featured">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4ZM7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4" /></svg>
-                <div><h3>Hackathon Runner-Up</h3><p className="achievement-meta">Fabtech Technical Campus · Runner-up <span className="achievement-prize">· ₹10,000 prize</span></p><p>Secured runner-up position at a hackathon hosted by Fabtech Technical Campus, earning a cash prize of ₹10,000.</p></div>
+                <div><h3>KURUKSHETRA 2.0</h3><p className="achievement-subtitle">24-Hour Hackathon — Runner-Up</p><p className="achievement-meta">Fabtech Technical Campus, College of Engineering &amp; Research<br />Sangola, Maharashtra · October 30–31, 2026</p><div className="achievement-result"><span>2nd Place</span><span>₹10,000 <small>cash prize</small></span></div></div>
               </article>
               <article className="achievement">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14" /></svg>
-                <div><h3>GirlScript Summer of Code (GSSoC) 2026</h3><p className="achievement-meta">Open Source Contributor · May 2026 – August 2026</p><p>Contributed to multiple open-source repositories during GSSoC 2026, collaborating on community-driven software projects.</p></div>
+                <div><h3>GirlScript Summer of Code (GSSoC) 2026</h3><p className="achievement-meta">Open Source Contributor · May–August 2026</p><p>Contributed to multiple open-source repositories.</p></div>
               </article>
             </div>
           </section>
 
           <section id="contact" className="section contact-section" data-reveal>
-            <div className="section-label"><span>05</span><h2>Get in touch</h2></div>
+            <div className="section-label"><span>06</span><h2>Get in touch</h2></div>
             <div className="section-content"><p className="contact-lede">Have a project in mind or want to connect?</p><p className="section-intro">I’m open to collaborations, open-source work and internships.</p><a className="email-link" href={`mailto:${PROFILE.email}`}>{PROFILE.email} <span aria-hidden="true">↗</span></a><div className="social-links"><ExternalLink href={PROFILE.github}>GitHub</ExternalLink><ExternalLink href={PROFILE.linkedin}>LinkedIn</ExternalLink></div><div className="form-wrap"><h3>Send a message</h3><ContactForm /></div></div>
           </section>
           </>}
